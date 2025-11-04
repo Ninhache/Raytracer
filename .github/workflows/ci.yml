@@ -31,24 +31,16 @@ jobs:
       - name: Maven - run tests
         run: mvn -B -q -ntp test
 
-      - name: Upload Surefire reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: surefire-reports
-          path: |
-            **/target/surefire-reports/**
-            **/target/failsafe-reports/**
-          if-no-files-found: ignore
-
-      - name: Generate JaCoCo report (optional)
+      - name: Generate JaCoCo report
         if: always()
         run: mvn -B -q -ntp -DskipTests jacoco:report || true
 
-      - name: Upload JaCoCo report (optional)
+      - name: Upload coverage to Codecov
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: codecov/codecov-action@v4
         with:
-          name: jacoco-report
-          path: "**/target/site/jacoco/**"
-          if-no-files-found: ignore
+          files: target/site/jacoco/jacoco.xml
+          flags: unittests
+          name: codecov-report
+          fail_ci_if_error: true
+          verbose: false
