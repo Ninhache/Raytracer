@@ -1,168 +1,278 @@
 package fr.ninhache.raytracer.math;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.api.DisplayName;
 
+import static fr.ninhache.raytracer.math.TestUtils.EPS;
 import static fr.ninhache.raytracer.math.TestUtils.assertAlmost;
+import static org.junit.jupiter.api.Assertions.*;
 
-
-public class VectorTest {
+@DisplayName("Tests de la classe Vector")
+class VectorTest {
 
     @Test
-    void add_sub_scale() {
-        Vector a = new Vector(1,2,3);
-        Vector b = new Vector(-2,5,4);
+    @DisplayName("add() - additionne deux vecteurs")
+    void add_twoVectors_returnsSum() {
+        Vector v1 = new Vector(1, 2, 3);
+        Vector v2 = new Vector(4, 5, 6);
 
-        Vector sum = a.add(b);
-        assertAlmost(sum.x, -1); assertAlmost(sum.y, 7); assertAlmost(sum.z, 7);
+        Vector result = v1.add(v2);
 
-        Vector diff = a.sub(b);
-        assertAlmost(diff.x, 3); assertAlmost(diff.y, -3); assertAlmost(diff.z, -1);
-
-        Vector scaled = a.mul(2.5);
-        assertAlmost(scaled.x, 2.5); assertAlmost(scaled.y, 5.0); assertAlmost(scaled.z, 7.5);
+        assertTrue(result.almostEquals(new Vector(5, 7, 9), EPS));
     }
 
     @Test
-    void length_and_normalize() {
-        Vector v = new Vector(3,4,0);
-        assertAlmost(v.length(), 5.0);
-        Vector n = (Vector) v.normalized();
-        assertAlmost(n.length(), 1.0);
-        assertAlmost(n.x, 0.6); assertAlmost(n.y, 0.8); assertAlmost(n.z, 0.0);
+    @DisplayName("add() - est commutative")
+    void add_isCommutative() {
+        Vector v1 = new Vector(1, 2, 3);
+        Vector v2 = new Vector(7, 8, 9);
+
+        assertTrue(v1.add(v2).almostEquals(v2.add(v1), EPS));
     }
 
     @Test
-    void normalize_zero_vector_returns_zero() {
-        Vector zero = new Vector(0,0,0);
-        Vector n = (Vector) zero.normalized();
-        assertAlmost(n.x, 0); assertAlmost(n.y, 0); assertAlmost(n.z, 0);
-        assertAlmost(n.length(), 0);
+    @DisplayName("sub() - soustrait deux vecteurs")
+    void sub_twoVectors_returnsDifference() {
+        Vector v1 = new Vector(10, 20, 30);
+        Vector v2 = new Vector(1, 2, 3);
+
+        Vector result = v1.sub(v2);
+
+        assertTrue(result.almostEquals(new Vector(9, 18, 27), EPS));
     }
 
     @Test
-    void dot_and_cross_properties() {
-        Vector i = new Vector(1,0,0);
-        Vector j = new Vector(0,1,0);
+    @DisplayName("sub() - n'est pas commutative")
+    void sub_isNotCommutative() {
+        Vector v1 = new Vector(5, 5, 5);
+        Vector v2 = new Vector(3, 2, 1);
 
-        // orthogonaux
-        assertAlmost(i.dot(j), 0);
+        Vector forward = v1.sub(v2);   // (2, 3, 4)
+        Vector backward = v2.sub(v1);  // (-2, -3, -4)
 
-        // i x j = k
-        Vector k = i.cross(j);
-        assertAlmost(k.x, 0); assertAlmost(k.y, 0); assertAlmost(k.z, 1);
-
-        // non commutatif : j x i = -k
-        Vector minusK = j.cross(i);
-        assertAlmost(minusK.x, 0); assertAlmost(minusK.y, 0); assertAlmost(minusK.z, -1);
-
-        // a × a = 0
-        Vector zero = i.cross(i);
-        assertAlmost(zero.length(), 0);
+        assertTrue(forward.almostEquals(backward.negate(), EPS),
+                "v1.sub(v2) devrait être égal à -(v2.sub(v1))");
     }
 
     @Test
-    void dot_is_distributive_over_addition() {
-        Vector a = new Vector(2,3,4);
-        Vector b = new Vector(10,0.5,2);
-        Vector c = new Vector(-1, 7, 0.25);
+    @DisplayName("mul() - multiplie par un scalaire")
+    void mul_positiveScalar_scalesVector() {
+        Vector v = new Vector(1, 2, 3);
 
-        double left = a.dot(b.add(c));
-        double right = a.dot(b) + a.dot(c);
-        assertAlmost(left, right);
+        Vector result = v.mul(2.5);
+
+        assertTrue(result.almostEquals(new Vector(2.5, 5, 7.5), EPS));
     }
 
     @Test
-    void schur_product_components() {
-        Vector a = new Vector(2,3,4);
-        Vector b = new Vector(10,0.5,2);
+    @DisplayName("mul(0) - retourne le vecteur nul")
+    void mul_zero_returnsZeroVector() {
+        Vector v = new Vector(10, 20, 30);
 
-        Vector s = a.schur(b);
-        assertAlmost(s.x, 20);
-        assertAlmost(s.y, 1.5);
-        assertAlmost(s.z, 8);
+        Vector result = v.mul(0);
+
+        assertTrue(result.isZero(EPS));
     }
 
     @Test
-    void cross_is_orthogonal_to_operands() {
-        Vector a = new Vector(2,3,4);
-        Vector b = new Vector(-1,5,2);
-        Vector c = a.cross(b);
-        assertAlmost(c.dot(a), 0);
-        assertAlmost(c.dot(b), 0);
-    }
+    @DisplayName("mul(-1) - inverse la direction")
+    void mul_negativeOne_negatesVector() {
+        Vector v = new Vector(1, 2, 3);
 
+        Vector result = v.mul(-1);
 
-    @Test
-    void schur_with_zero_is_zero() {
-        Vector a = new Vector(2,3,4);
-        Vector zero = new Vector(0,0,0);
-        Vector s = a.schur(zero);
-        assertAlmost(s.x, 0);
-        assertAlmost(s.y, 0);
-        assertAlmost(s.z, 0);
+        assertTrue(result.almostEquals(new Vector(-1, -2, -3), EPS));
     }
 
     @Test
-    void schur_with_ones_is_identity() {
-        Vector a = new Vector(2,3,4);
-        Vector ones = new Vector(1,1,1);
-        Vector s = a.schur(ones);
-        assertAlmost(s.x, a.x);
-        assertAlmost(s.y, a.y);
-        assertAlmost(s.z, a.z);
+    @DisplayName("div() - divise par un scalaire")
+    void div_scalar_dividesVector() {
+        Vector v = new Vector(10, 20, 30);
+
+        Vector result = v.div(2);
+
+        assertTrue(result.almostEquals(new Vector(5, 10, 15), EPS));
     }
 
     @Test
-    void lengthSquared_matches_sum_of_squares() {
-        Vector v = new Vector(3,4,12);
-        assertAlmost(v.lengthSquared(), 9 + 16 + 144);
+    @DisplayName("dot() - calcule le produit scalaire")
+    void dot_twoVectors_returnsScalarProduct() {
+        Vector v1 = new Vector(1, 2, 3);
+        Vector v2 = new Vector(4, 5, 6);
+
+        double result = v1.dot(v2);
+
+        // 1×4 + 2×5 + 3×6 = 4 + 10 + 18 = 32
+        assertAlmost(result, 32.0);
     }
 
     @Test
-    void dot_is_symmetric_and_homogeneous() {
-        Vector a = new Vector(2,3,4);
-        Vector b = new Vector(-1, 5, 2);
-        assertAlmost(a.dot(b), b.dot(a));
+    @DisplayName("dot() - est commutatif")
+    void dot_isCommutative() {
+        Vector v1 = new Vector(3, 4, 5);
+        Vector v2 = new Vector(6, 7, 8);
 
-        double k = 2.5;
-        assertAlmost(a.mul(k).dot(b), k * a.dot(b));
-        assertAlmost(a.dot(b.mul(k)), k * a.dot(b));
+        assertAlmost(v1.dot(v2), v2.dot(v1));
     }
 
+    @Test
+    @DisplayName("dot() - vecteurs orthogonaux donnent 0")
+    void dot_orthogonalVectors_returnsZero() {
+        Vector v1 = new Vector(1, 0, 0);
+        Vector v2 = new Vector(0, 1, 0);
 
-    @ParameterizedTest
-    @CsvSource({
-            "1,0,0,   0,1,0",
-            "2,-3,4,  -2,5,4",
-            "0.5,0.5,0.5,  -1,2,-3"
-    })
-    void addition_commutative(double ax, double ay, double az,
-                              double bx, double by, double bz) {
-        Vector a = new Vector(ax, ay, az);
-        Vector b = new Vector(bx, by, bz);
-        Vector ab = a.add(b);
-        Vector ba = b.add(a);
-        assertAlmost(ab.x, ba.x);
-        assertAlmost(ab.y, ba.y);
-        assertAlmost(ab.z, ba.z);
+        double result = v1.dot(v2);
+
+        assertAlmost(result, 0.0);
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "1,0,0,   0,1,0,   0,0,1",
-            "0,1,0,   1,0,0,   0,0,-1"
-    })
-    void cross_orientation(double ax, double ay, double az,
-                           double bx, double by, double bz,
-                           double ex, double ey, double ez) {
-        Vector a = new Vector(ax, ay, az);
-        Vector b = new Vector(bx, by, bz);
-        Vector expected = new Vector(ex, ey, ez);
-        Vector res = a.cross(b);
-        assertAlmost(res.x, expected.x);
-        assertAlmost(res.y, expected.y);
-        assertAlmost(res.z, expected.z);
+    @Test
+    @DisplayName("dot() - vecteurs parallèles donnent produit des normes")
+    void dot_parallelVectors_returnsProductOfLengths() {
+        Vector v1 = new Vector(3, 0, 0);
+        Vector v2 = new Vector(4, 0, 0);
+
+        double result = v1.dot(v2);
+
+        assertAlmost(result, 12.0);  // 3 × 4
+    }
+
+    @Test
+    @DisplayName("cross() - calcule le produit vectoriel")
+    void cross_twoVectors_returnsPerpendicularVector() {
+        Vector v1 = new Vector(1, 0, 0);
+        Vector v2 = new Vector(0, 1, 0);
+
+        Vector result = v1.cross(v2);
+
+        assertTrue(result.almostEquals(new Vector(0, 0, 1), EPS),
+                "Le produit vectoriel de X et Y devrait donner Z");
+    }
+
+    @Test
+    @DisplayName("cross() - n'est PAS commutatif")
+    void cross_isAntiCommutative() {
+        Vector v1 = new Vector(1, 2, 3);
+        Vector v2 = new Vector(4, 5, 6);
+
+        Vector forward = v1.cross(v2);
+        Vector backward = v2.cross(v1);
+
+        assertTrue(forward.almostEquals(backward.negate(), EPS),
+                "v1.cross(v2) devrait être égal à -(v2.cross(v1))");
+    }
+
+    @Test
+    @DisplayName("cross() - vecteurs colinéaires donnent vecteur nul")
+    void cross_collinearVectors_returnsZeroVector() {
+        Vector v1 = new Vector(2, 4, 6);
+        Vector v2 = new Vector(1, 2, 3);  // v1 = 2 × v2
+
+        Vector result = v1.cross(v2);
+
+        assertTrue(result.isZero(EPS),
+                "Le produit vectoriel de vecteurs colinéaires devrait être nul");
+    }
+
+    @Test
+    @DisplayName("cross() - le résultat est orthogonal aux deux vecteurs")
+    void cross_resultIsOrthogonalToInputs() {
+        Vector v1 = new Vector(1, 2, 3);
+        Vector v2 = new Vector(4, 5, 6);
+
+        Vector result = v1.cross(v2);
+
+        assertAlmost(result.dot(v1), 0.0);
+        assertAlmost(result.dot(v2), 0.0);
+    }
+
+    @Test
+    @DisplayName("negate() - inverse le vecteur")
+    void negate_returnsOppositeVector() {
+        Vector v = new Vector(1, -2, 3);
+
+        Vector result = v.negate();
+
+        assertTrue(result.almostEquals(new Vector(-1, 2, -3), EPS));
+    }
+
+    @Test
+    @DisplayName("normalized() - retourne un vecteur unitaire")
+    void normalized_nonZeroVector_returnsUnitVector() {
+        Vector v = new Vector(3, 4, 0);
+
+        Vector normalized = v.normalized();
+
+        assertAlmost(normalized.length(), 1.0);
+        assertTrue(normalized.almostEquals(new Vector(0.6, 0.8, 0), EPS));
+    }
+
+    @Test
+    @DisplayName("projectOnto() - projette sur un autre vecteur")
+    void projectOnto_returnsProjection() {
+        Vector v = new Vector(3, 4, 0);
+        Vector onto = new Vector(1, 0, 0);  // Axe X
+
+        Vector projection = v.projectOnto(onto);
+
+        assertTrue(projection.almostEquals(new Vector(3, 0, 0), EPS),
+                "La projection de (3,4,0) sur X devrait être (3,0,0)");
+    }
+
+    @Test
+    @DisplayName("projectOnto() - vecteur nul lance une exception")
+    void projectOnto_zeroVector_throwsException() {
+        Vector v = new Vector(1, 2, 3);
+        Vector zero = new Vector(0, 0, 0);
+
+        assertThrows(ArithmeticException.class, () -> v.projectOnto(zero),
+                "Projeter sur un vecteur nul devrait lever une exception");
+    }
+
+    @Test
+    @DisplayName("reflect() - réfléchit par rapport à une normale")
+    void reflect_normalizedNormal_returnsReflection() {
+        // Vecteur incident à 45° du sol
+        Vector incident = new Vector(1, -1, 0).normalized();
+        Vector normal = new Vector(0, 1, 0);  // Normale verticale
+
+        Vector reflected = incident.reflect(normal);
+
+        // La réflexion devrait être symétrique : (1, 1, 0) normalisé
+        Vector expected = new Vector(1, 1, 0).normalized();
+        assertTrue(reflected.almostEquals(expected, EPS),
+                "La réflexion devrait être symétrique par rapport à la normale");
+    }
+
+    @Test
+    @DisplayName("schur() - produit composante par composante")
+    void schur_twoVectors_returnsComponentwiseProduct() {
+        Vector v1 = new Vector(2, 3, 4);
+        Vector v2 = new Vector(10, 0.5, 2);
+
+        Vector result = v1.schur(v2);
+
+        assertTrue(result.almostEquals(new Vector(20, 1.5, 8), EPS));
+    }
+
+    @Test
+    @DisplayName("equals() - compare strictement les composantes")
+    void equals_sameComponents_returnsTrue() {
+        Vector v1 = new Vector(1, 2, 3);
+        Vector v2 = new Vector(1, 2, 3);
+
+        assertEquals(v1, v2);
+        assertEquals(v1.hashCode(), v2.hashCode());
+    }
+
+    @Test
+    @DisplayName("toString() - contient les composantes")
+    void toString_containsComponents() {
+        String str = new Vector(1.5, 2.5, 3.5).toString();
+
+        assertTrue(str.contains("Vector"));
+        assertTrue(str.contains("1.5"));
+        assertTrue(str.contains("2.5"));
+        assertTrue(str.contains("3.5"));
     }
 }
