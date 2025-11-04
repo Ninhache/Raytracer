@@ -155,26 +155,9 @@ public abstract class AbstractVec3 {
         if (other == null || !getClass().equals(other.getClass())) {
             return false;
         }
-        return almostEqual(x, other.x, epsilon)
-                && almostEqual(y, other.y, epsilon)
-                && almostEqual(z, other.z, epsilon);
-    }
-
-    /**
-     * Compare deux valeurs flottantes avec une tolérance relative
-     *
-     * @param a première valeur
-     * @param b seconde valeur
-     * @param epsilon tolérance relative
-     * @return {@code true} si les valeurs sont proches selon la formule relative, {@code false} sinon ou si l'une est NaN
-     */
-    private static boolean almostEqual(double a, double b, double epsilon) {
-        if (Double.isNaN(a) || Double.isNaN(b)) {
-            return false;
-        }
-        double diff = Math.abs(a - b);
-        double scale = Math.max(1.0, Math.max(Math.abs(a), Math.abs(b)));
-        return diff <= epsilon * scale;
+        return Epsilon.almostEqual(x, other.x, epsilon)
+                && Epsilon.almostEqual(y, other.y, epsilon)
+                && Epsilon.almostEqual(z, other.z, epsilon);
     }
 
     /**
