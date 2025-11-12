@@ -1,8 +1,10 @@
-package fr.ninhache.raytracer.parser.custom;
+package fr.ninhache.raytracer.parser.handlers;
 
 import fr.ninhache.raytracer.geometry.Sphere;
 import fr.ninhache.raytracer.math.Point;
+import fr.ninhache.raytracer.parser.ParsingContext;
 import fr.ninhache.raytracer.parser.TokenHandler;
+import fr.ninhache.raytracer.parser.TokenProcessor;
 import fr.ninhache.raytracer.scene.SceneBuilder;
 import fr.ninhache.raytracer.scene.exception.ParseException;
 
@@ -13,16 +15,16 @@ import fr.ninhache.raytracer.scene.exception.ParseException;
  *
  * <p>Exemple : {@code sphere 0 1 0 0.5}
  */
-public class SphereTokenHandler implements TokenHandler {
+@TokenHandler("sphere")
+public class SphereTokenHandler implements TokenProcessor {
+
 
     @Override
-    public void handle(String[] tokens, int lineNumber, SceneBuilder builder)
-            throws ParseException {
-
+    public void process(String[] tokens, ParsingContext context) throws ParseException {
         if (tokens.length != 5) {
             throw new ParseException(
                     "sphere nécessite 4 paramètres : x y z rayon",
-                    lineNumber,
+                    context.getCurrentLineNumber(),
                     String.join(" ", tokens)
             );
         }
@@ -36,27 +38,23 @@ public class SphereTokenHandler implements TokenHandler {
             if (radius <= 0) {
                 throw new ParseException(
                         "Le rayon de la sphère doit être > 0",
-                        lineNumber,
+                        context.getCurrentLineNumber(),
                         String.join(" ", tokens)
                 );
             }
 
             Point center = new Point(x, y, z);
             Sphere sphere = new Sphere(center, radius);
-            builder.addShape(sphere);
+            context.getSceneBuilder().addShape(sphere);
+
 
         } catch (NumberFormatException e) {
             throw new ParseException(
                     "Les paramètres de sphere doivent être des nombres",
-                    lineNumber,
+                    context.getCurrentLineNumber(),
                     String.join(" ", tokens),
                     e
             );
         }
-    }
-
-    @Override
-    public String getTokenName() {
-        return "sphere";
     }
 }

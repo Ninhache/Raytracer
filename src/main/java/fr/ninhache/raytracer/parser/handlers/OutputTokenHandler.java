@@ -1,6 +1,8 @@
-package fr.ninhache.raytracer.parser.custom;
+package fr.ninhache.raytracer.parser.handlers;
 
+import fr.ninhache.raytracer.parser.ParsingContext;
 import fr.ninhache.raytracer.parser.TokenHandler;
+import fr.ninhache.raytracer.parser.TokenProcessor;
 import fr.ninhache.raytracer.scene.SceneBuilder;
 import fr.ninhache.raytracer.scene.exception.ParseException;
 
@@ -11,24 +13,14 @@ import fr.ninhache.raytracer.scene.exception.ParseException;
  *
  * <p>Exemple : {@code output scene1.png}
  */
-public class OutputTokenHandler implements TokenHandler {
-
+@TokenHandler("output")
+public class OutputTokenHandler implements TokenProcessor {
     @Override
-    public void handle(String[] tokens, int lineNumber, SceneBuilder builder) throws ParseException {
-
+    public void process(String[] tokens, ParsingContext context) throws ParseException {
         if (tokens.length != 2) {
-            throw new ParseException(
-                "output nécessite exactement 1 paramètre : nom_fichier",
-                lineNumber,
-                String.join(" ", tokens)
-            );
+            throw new ParseException("output nécessite 1 paramètre: nom_fichier");
         }
-
-        builder.setOutputFilename(tokens[1]);
+        context.getSceneBuilder().setOutputFilename(tokens[1]);
     }
 
-    @Override
-    public String getTokenName() {
-        return "output";
-    }
 }

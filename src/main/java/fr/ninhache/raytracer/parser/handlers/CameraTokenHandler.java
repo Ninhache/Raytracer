@@ -24,7 +24,7 @@ import fr.ninhache.raytracer.scene.Camera;
  * <p>Exemple : {@code camera 0 0 4 0 0 0 0 1 0 45}
  */
 @TokenHandler("camera")
-public class CameraTokenProcessor implements TokenProcessor {
+public class CameraTokenHandler implements TokenProcessor {
     @Override
     public void process(String[] tokens, ParsingContext context) throws ParseException {
         if (tokens.length != 11) {

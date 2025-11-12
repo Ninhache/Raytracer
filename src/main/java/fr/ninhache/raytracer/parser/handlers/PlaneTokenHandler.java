@@ -1,10 +1,11 @@
-package fr.ninhache.raytracer.parser.custom;
+package fr.ninhache.raytracer.parser.handlers;
 
 import fr.ninhache.raytracer.geometry.Plane;
 import fr.ninhache.raytracer.math.Point;
 import fr.ninhache.raytracer.math.Vector;
+import fr.ninhache.raytracer.parser.ParsingContext;
 import fr.ninhache.raytracer.parser.TokenHandler;
-import fr.ninhache.raytracer.scene.SceneBuilder;
+import fr.ninhache.raytracer.parser.TokenProcessor;
 import fr.ninhache.raytracer.scene.exception.ParseException;
 
 /**
@@ -20,16 +21,14 @@ import fr.ninhache.raytracer.scene.exception.ParseException;
  *
  * <p>Exemple : {@code plane 0 -1 0 0 1 0} (sol au niveau y=-1)
  */
-public class PlaneTokenHandler implements TokenHandler {
-
+@TokenHandler("plane")
+public class PlaneTokenHandler implements TokenProcessor {
     @Override
-    public void handle(String[] tokens, int lineNumber, SceneBuilder builder)
-            throws ParseException {
-
+    public void process(String[] tokens, ParsingContext context) throws ParseException {
         if (tokens.length != 7) {
             throw new ParseException(
                     "plane nécessite 6 paramètres : x y z nx ny nz",
-                    lineNumber,
+                    context.getCurrentLineNumber(),
                     String.join(" ", tokens)
             );
         }
@@ -49,27 +48,23 @@ public class PlaneTokenHandler implements TokenHandler {
 
             // Création du plan
             Plane plane = new Plane(point, normal);
-            builder.addShape(plane);
+
+            context.getSceneBuilder().addShape(plane);
 
         } catch (NumberFormatException e) {
             throw new ParseException(
                     "Les paramètres de plane doivent être des nombres",
-                    lineNumber,
+                    context.getCurrentLineNumber(),
                     String.join(" ", tokens),
                     e
             );
         } catch (IllegalArgumentException e) {
             throw new ParseException(
                     "Paramètres de plan invalides : " + e.getMessage(),
-                    lineNumber,
+                    context.getCurrentLineNumber(),
                     String.join(" ", tokens),
                     e
             );
         }
-    }
-
-    @Override
-    public String getTokenName() {
-        return "plane";
     }
 }

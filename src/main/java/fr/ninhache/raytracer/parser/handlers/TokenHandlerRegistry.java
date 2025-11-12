@@ -1,4 +1,4 @@
-package fr.ninhache.raytracer.parser.custom;
+package fr.ninhache.raytracer.parser.handlers;
 
 
 import fr.ninhache.raytracer.parser.TokenHandler;
@@ -38,7 +38,7 @@ public class TokenHandlerRegistry {
      * @param handler le handler à enregistrer
      */
     public void register(TokenHandler handler) {
-        handlers.put(handler.getTokenName(), handler);
+        //handlers.put(handler.getTokenName(), handler);
     }
 
     /**
@@ -67,7 +67,7 @@ public class TokenHandlerRegistry {
             );
         }
 
-        handler.handle(tokens, lineNumber, builder);
+        //handler.handle(tokens, lineNumber, builder);
     }
 
     /**

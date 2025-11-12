@@ -12,7 +12,7 @@ import fr.ninhache.raytracer.parser.*;
  * <p>Exemple : {@code size 640 480}
  */
 @TokenHandler("size")
-public class SizeTokenProcessor implements TokenProcessor {
+public class SizeTokenHandler implements TokenProcessor {
     @Override
     public void process(String[] tokens, ParsingContext context) throws ParseException {
         if (tokens.length != 3) {

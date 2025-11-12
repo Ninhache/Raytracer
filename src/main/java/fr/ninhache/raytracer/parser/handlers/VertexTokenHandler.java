@@ -1,7 +1,9 @@
-package fr.ninhache.raytracer.parser.custom;
+package fr.ninhache.raytracer.parser.handlers;
 
 import fr.ninhache.raytracer.math.Point;
+import fr.ninhache.raytracer.parser.ParsingContext;
 import fr.ninhache.raytracer.parser.TokenHandler;
+import fr.ninhache.raytracer.parser.TokenProcessor;
 import fr.ninhache.raytracer.scene.SceneBuilder;
 import fr.ninhache.raytracer.scene.exception.ParseException;
 
@@ -12,16 +14,16 @@ import fr.ninhache.raytracer.scene.exception.ParseException;
  *
  * <p>Exemple : {@code vertex -1 -1 0}
  */
-public class VertexTokenHandler implements TokenHandler {
+@TokenHandler("vertex")
+public class VertexTokenHandler implements TokenProcessor {
+
 
     @Override
-    public void handle(String[] tokens, int lineNumber, SceneBuilder builder)
-            throws ParseException {
-
+    public void process(String[] tokens, ParsingContext context) throws ParseException {
         if (tokens.length != 4) {
             throw new ParseException(
                     "vertex nécessite 3 paramètres : x y z",
-                    lineNumber,
+                    context.getCurrentLineNumber(),
                     String.join(" ", tokens)
             );
         }
@@ -32,20 +34,15 @@ public class VertexTokenHandler implements TokenHandler {
             double z = Double.parseDouble(tokens[3]);
 
             Point vertex = new Point(x, y, z);
-            builder.addVertex(vertex);
+            context.addVertex(vertex);
 
         } catch (NumberFormatException e) {
             throw new ParseException(
                     "Les coordonnées du vertex doivent être des nombres",
-                    lineNumber,
+                    context.getCurrentLineNumber(),
                     String.join(" ", tokens),
                     e
             );
         }
-    }
-
-    @Override
-    public String getTokenName() {
-        return "vertex";
     }
 }

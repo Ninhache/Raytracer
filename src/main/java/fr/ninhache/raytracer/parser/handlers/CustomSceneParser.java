@@ -1,4 +1,4 @@
-package fr.ninhache.raytracer.parser.custom;
+package fr.ninhache.raytracer.parser.handlers;
 
 
 import fr.ninhache.raytracer.parser.*;
@@ -59,6 +59,7 @@ public class CustomSceneParser implements SceneParser {
      * Enregistre tous les handlers de tokens supportés.
      */
     private void registerDefaultHandlers() {
+        /*
         // Paramètres de rendu
         registry.register(new SizeTokenHandler());
         registry.register(new OutputTokenHandler());
@@ -81,6 +82,8 @@ public class CustomSceneParser implements SceneParser {
         registry.register(new VertexTokenHandler());
         registry.register(new TriangleTokenHandler());
         registry.register(new PlaneTokenHandler());
+        */
+
     }
 
     @Override

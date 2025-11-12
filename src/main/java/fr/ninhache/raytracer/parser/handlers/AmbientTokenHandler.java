@@ -14,7 +14,7 @@ import fr.ninhache.raytracer.scene.exception.ParseException;
  * <p>Exemple : {@code ambient 0.1 0.1 0.1}
  */
 @TokenHandler("ambient")
-public class AmbientTokenProcessor implements TokenProcessor {
+public class AmbientTokenHandler implements TokenProcessor {
     @Override
     public void process(String[] tokens, ParsingContext context) throws ParseException {
         if (tokens.length != 4) {
@@ -28,7 +28,6 @@ public class AmbientTokenProcessor implements TokenProcessor {
 
             Color ambient = new Color(r, g, b);
             context.setCurrentAmbient(ambient);
-
         } catch (NumberFormatException e) {
             throw new ParseException("Les composantes de couleur doivent être des nombres");
         }

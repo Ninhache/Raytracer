@@ -1,7 +1,9 @@
-package fr.ninhache.raytracer.parser.custom;
+package fr.ninhache.raytracer.parser.handlers;
 
 import fr.ninhache.raytracer.math.Color;
+import fr.ninhache.raytracer.parser.ParsingContext;
 import fr.ninhache.raytracer.parser.TokenHandler;
+import fr.ninhache.raytracer.parser.TokenProcessor;
 import fr.ninhache.raytracer.scene.SceneBuilder;
 import fr.ninhache.raytracer.scene.exception.ParseException;
 
@@ -12,16 +14,15 @@ import fr.ninhache.raytracer.scene.exception.ParseException;
  *
  * <p>Exemple : {@code specular 0.5 0.5 0.5}
  */
-public class SpecularTokenHandler implements TokenHandler {
+@TokenHandler("specular")
+public class SpecularTokenHandler implements TokenProcessor {
 
     @Override
-    public void handle(String[] tokens, int lineNumber, SceneBuilder builder)
-            throws ParseException {
-
+    public void process(String[] tokens, ParsingContext context) throws ParseException {
         if (tokens.length != 4) {
             throw new ParseException(
                     "specular nécessite 3 paramètres : r g b",
-                    lineNumber,
+                    context.getCurrentLineNumber(),
                     String.join(" ", tokens)
             );
         }
@@ -32,20 +33,15 @@ public class SpecularTokenHandler implements TokenHandler {
             double b = Double.parseDouble(tokens[3]);
 
             Color specular = new Color(r, g, b);
-            builder.setSpecular(specular);
+            context.getSceneBuilder().setSpecular(specular);
 
         } catch (NumberFormatException e) {
             throw new ParseException(
                     "Les composantes de couleur doivent être des nombres",
-                    lineNumber,
+                    context.getCurrentLineNumber(),
                     String.join(" ", tokens),
                     e
             );
         }
-    }
-
-    @Override
-    public String getTokenName() {
-        return "specular";
     }
 }
