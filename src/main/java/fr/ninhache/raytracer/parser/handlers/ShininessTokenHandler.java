@@ -9,12 +9,12 @@ import fr.ninhache.raytracer.scene.exception.ParseException;
 public class ShininessTokenHandler implements TokenProcessor {
     @Override
     public void process(String[] tokens, ParsingContext context) throws ParseException {
-        if (tokens.length != 4) {
+        if (tokens.length != 2) {
             throw new ParseException("shininess nécessite 1 paramètre", context.getCurrentLineNumber(), context.getCurrentLine());
         }
 
         try {
-            int intensity = Integer.parseInt(tokens[1]);
+            double intensity = Double.parseDouble(tokens[1]);
 
             context.setCurrentShininess(intensity);
         } catch (NumberFormatException e) {
