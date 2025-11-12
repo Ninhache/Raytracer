@@ -20,7 +20,8 @@ public class OutputTokenHandler implements TokenProcessor {
         if (tokens.length != 2) {
             throw new ParseException("output nécessite 1 paramètre: nom_fichier");
         }
-        context.getSceneBuilder().setOutputFilename(tokens[1]);
+
+        context.setOutputFilename(tokens[1]);
     }
 
 }

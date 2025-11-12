@@ -45,7 +45,7 @@ public class SphereTokenHandler implements TokenProcessor {
 
             Point center = new Point(x, y, z);
             Sphere sphere = new Sphere(center, radius);
-            context.getSceneBuilder().addShape(sphere);
+            context.addShape(sphere);
 
 
         } catch (NumberFormatException e) {

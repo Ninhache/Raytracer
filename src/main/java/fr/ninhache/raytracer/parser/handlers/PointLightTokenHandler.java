@@ -50,7 +50,7 @@ public class PointLightTokenHandler implements TokenProcessor {
 
             // Création de la lumière ponctuelle
             PointLight light = new PointLight(position, color);
-            context.getSceneBuilder().addLight(light);
+            context.addLight(light);
 
 
         } catch (NumberFormatException e) {

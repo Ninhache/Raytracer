@@ -33,8 +33,7 @@ public class SpecularTokenHandler implements TokenProcessor {
             double b = Double.parseDouble(tokens[3]);
 
             Color specular = new Color(r, g, b);
-            context.getSceneBuilder().setSpecular(specular);
-
+            context.setCurrentSpecular(specular);
         } catch (NumberFormatException e) {
             throw new ParseException(
                     "Les composantes de couleur doivent être des nombres",

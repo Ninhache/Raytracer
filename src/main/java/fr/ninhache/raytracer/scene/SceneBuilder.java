@@ -105,7 +105,7 @@ public class SceneBuilder {
      */
     public void setDiffuse(Color diffuse) throws ParseException {
         validateColorRange(diffuse, "diffuse");
-        currentMaterial = new Material(diffuse, currentMaterial.getSpecular());
+        currentMaterial = new Material(diffuse, currentMaterial.getSpecular(), currentMaterial.getShininess());
         validateMaterialConstraint();
     }
 
@@ -117,8 +117,18 @@ public class SceneBuilder {
      */
     public void setSpecular(Color specular) throws ParseException {
         validateColorRange(specular, "specular");
-        currentMaterial = new Material(currentMaterial.getDiffuse(), specular);
+        currentMaterial = new Material(currentMaterial.getDiffuse(), specular, currentMaterial.getShininess());
     }
+
+    public void setShininess(double shininess) throws ParseException {
+        if (shininess < 0 || shininess > 100) {
+            throw new ParseException("shininess doit être compris entre 0 et 100");
+        }
+
+        currentMaterial = new Material(currentMaterial.getDiffuse(), currentMaterial.getSpecular(), shininess);
+    }
+
+
 
     /**
      * Valide que ambient + diffuse ≤ 1.0 sur chaque composante.

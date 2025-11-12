@@ -39,7 +39,7 @@ public class TriangleTokenHandler implements TokenProcessor {
             Point p3 = context.getVertex(i3);
 
             Triangle triangle = new Triangle(p1, p2, p3);
-            context.getSceneBuilder().addShape(triangle);
+            context.addShape(triangle);
 
         } catch (NumberFormatException e) {
             throw new ParseException(

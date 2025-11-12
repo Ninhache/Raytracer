@@ -49,8 +49,7 @@ public class PlaneTokenHandler implements TokenProcessor {
             // Création du plan
             Plane plane = new Plane(point, normal);
 
-            context.getSceneBuilder().addShape(plane);
-
+            context.addShape(plane);
         } catch (NumberFormatException e) {
             throw new ParseException(
                     "Les paramètres de plane doivent être des nombres",
