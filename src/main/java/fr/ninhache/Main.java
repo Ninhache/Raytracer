@@ -1,11 +1,14 @@
 package fr.ninhache;
 
+import fr.ninhache.raytracer.geometry.IShape;
+import fr.ninhache.raytracer.lighting.ILight;
+import fr.ninhache.raytracer.scene.Scene;
+import fr.ninhache.raytracer.scene.SceneLoader;
+
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 
 public class Main {
-
-
     private static int[][] convertTo2DWithoutUsingGetRGB(BufferedImage image) {
 
         final byte[] pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
@@ -50,11 +53,50 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        BufferedImage image1 = ResourceLoader.loadResourceAsBufferedImage("test_compare_image1.png");
-        BufferedImage image2 = ResourceLoader.loadResourceAsBufferedImage("test_compare_image2.png");
+//        if (args.length == 0) {
+//            System.err.println("Usage: java -jar raytracer.jar <scene_file>");
+//            System.exit(1);
+//        }
 
-//        int tutu = ImageComparator.countDifferentPixel(image1, image2);
-        ImageComparator.generateImageFromDifferentPixel(image1, image2);
-//        System.out.println(tutu);
+        try {
+//            String sceneFile = args[0];
+            // temporaire
+            String sceneFile = "/home/neo/imt/coo/tp3/src/main/resources/scenes/jalon2/test2.txt";
+
+            System.out.println("Chargement du fichier: " + sceneFile);
+
+            SceneLoader loader = new SceneLoader();
+            Scene scene = loader.load(sceneFile);
+
+             System.out.println("Résumé temporaire");
+             System.out.println("Dimensions: " + scene.getWidth() + "x" + scene.getHeight());
+             System.out.println("Sortie: " + scene.getOutputFilename());
+             System.out.println("Objets: " + scene.getShapeCount());
+             System.out.println("Lumières: " + scene.getLightCount());
+
+
+        } catch (Exception e) {
+            System.err.println("Erreur: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
+
+    private static void printUsage() {
+        System.out.println("Usage : java -jar raytracer.jar <scene_file>");
+        System.out.println();
+        System.out.println("Description :");
+        System.out.println("  Parse et valide un fichier de description de scène 3D.");
+        System.out.println();
+        System.out.println("Exemple :");
+        System.out.println("  java -jar raytracer.jar scenes/scene1.txt");
+        System.out.println();
+        System.out.println("Le parser vérifie :");
+        System.out.println("    - Format du fichier (syntaxe)");
+        System.out.println("    - Contrainte : ambient + diffuse <= 1.0");
+        System.out.println("    - Contrainte : somme des lumières <= 1.0");
+        System.out.println("    - Indices de vertices < maxverts");
+        System.out.println("    - Paramètres obligatoires (size, camera)");
+    }
+
 }
