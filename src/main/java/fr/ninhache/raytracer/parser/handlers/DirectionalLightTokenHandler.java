@@ -45,8 +45,7 @@ public class DirectionalLightTokenHandler implements TokenProcessor {
 
             // Création de la lumière directionnelle
             DirectionalLight light = new DirectionalLight(direction, color);
-            context.getSceneBuilder().addLight(light);
-
+            context.addLight(light);
         } catch (NumberFormatException e) {
             throw new ParseException(
                     "Les paramètres de directional doivent être des nombres",

@@ -55,7 +55,7 @@ public class CameraTokenHandler implements TokenProcessor {
 
             // Création de la caméra
             Camera camera = new Camera(lookFrom, lookAt, up, fov);
-            context.getSceneBuilder().setCamera(camera);
+            context.setCamera(camera);
 
         } catch (NumberFormatException e) {
             throw new ParseException("Les paramètres de camera doivent être des nombres");

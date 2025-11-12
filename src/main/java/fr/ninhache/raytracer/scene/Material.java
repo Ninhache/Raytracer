@@ -18,7 +18,7 @@ public class Material {
 
     private final Color diffuse;
     private final Color specular;
-    private final double shininess; // Contrôle la "dureté" du reflet (Basé sur Phong)
+    private final double shininess; // Contrôle la "dureté" du reflet (Basé sur Phong) [0.00 - 100.00]
     /*
     private final double reflectivity; // Taux de réflexion (0 = mat, 1 = miroir)
     private final double transparency; // 0 = opaque, 1 = totalement transparent

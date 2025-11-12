@@ -1,7 +1,10 @@
 package fr.ninhache.raytracer.parser;
 
+import fr.ninhache.raytracer.geometry.IShape;
+import fr.ninhache.raytracer.lighting.ILight;
 import fr.ninhache.raytracer.math.Color;
 import fr.ninhache.raytracer.math.Point;
+import fr.ninhache.raytracer.scene.Camera;
 import fr.ninhache.raytracer.scene.SceneBuilder;
 import fr.ninhache.raytracer.scene.exception.ParseException;
 
@@ -29,8 +32,8 @@ public class ParsingContext {
     private final SceneBuilder sceneBuilder;
 
     // État contextuel (modifié par les tokens de matériaux)
-    private Color currentAmbient;
     private int currentShininess;
+    private Color currentAmbient;
     private Color currentDiffuse;
     private Color currentSpecular;
 
@@ -59,6 +62,19 @@ public class ParsingContext {
         return sceneBuilder;
     }
 
+    public void setCamera(Camera camera) {
+        this.sceneBuilder.setCamera(camera);
+    }
+
+    public void addLight(ILight light) throws ParseException {
+        this.sceneBuilder.addLight(light);
+    }
+
+    public void addShape(IShape shape) throws ParseException {
+        this.sceneBuilder.addShape(shape);
+    }
+
+
     public Color getCurrentAmbient() {
         return currentAmbient;
     }
@@ -67,8 +83,8 @@ public class ParsingContext {
         this.currentAmbient = ambient;
     }
 
-    public void setCurrentShininess(int shininess) {
-        this.currentShininess = shininess;
+    public void setCurrentShininess(double shininess) throws ParseException {
+        this.sceneBuilder.setShininess(shininess);
     }
 
     public Color getCurrentDiffuse() {
@@ -83,8 +99,8 @@ public class ParsingContext {
         return currentSpecular;
     }
 
-    public void setCurrentSpecular(Color specular) {
-        this.currentSpecular = specular;
+    public void setCurrentSpecular(Color specular) throws ParseException {
+        this.sceneBuilder.setSpecular(specular);
     }
 
     public int getMaxVertices() {
@@ -133,4 +149,13 @@ public class ParsingContext {
     public void setCurrentLine(String line) {
         this.currentLine = line;
     }
+
+    public void setOutputFilename(String filename) {
+        this.sceneBuilder.setOutputFilename(filename);
+    }
+
+    public void setSize(int width, int height) throws ParseException {
+        this.sceneBuilder.setSize(width, height);
+    }
+
 }

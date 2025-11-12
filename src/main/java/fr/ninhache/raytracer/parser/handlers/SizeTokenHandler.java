@@ -20,6 +20,7 @@ public class SizeTokenHandler implements TokenProcessor {
         }
         int width = Integer.parseInt(tokens[1]);
         int height = Integer.parseInt(tokens[2]);
-        context.getSceneBuilder().setSize(width, height);
+
+        context.setSize(width, height);
     }
 }
