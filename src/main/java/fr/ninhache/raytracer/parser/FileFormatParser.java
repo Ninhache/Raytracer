@@ -1,4 +1,12 @@
 package fr.ninhache.raytracer.parser;
 
-public class FileFormatParser {
+import java.lang.annotation.*;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Documented
+public @interface FileFormatParser {
+    String[] extensions();
+    String description() default "";
+    int priority() default 100;
 }

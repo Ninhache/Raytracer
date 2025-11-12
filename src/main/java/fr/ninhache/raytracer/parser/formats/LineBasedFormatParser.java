@@ -2,6 +2,7 @@ package fr.ninhache.raytracer.parser.formats;
 
 import fr.ninhache.raytracer.parser.*;
 import fr.ninhache.raytracer.scene.Scene;
+import fr.ninhache.raytracer.scene.exception.ParseException;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
