@@ -94,4 +94,16 @@ public final class Camera {
         this.viewportHeight = 2.0 * Math.tan(fovRadians / 2.0);
         this.viewportWidth = viewportHeight; // Aspect ratio sera géré par le raytracer
     }
+
+    public Point getLookFrom() { return lookFrom; }
+    public Point getLookAt() { return lookAt; }
+    public Vector getUp() { return up; }
+    public Vector getU() { return u; }
+    public Vector getV() { return v; }
+    public Vector getW() { return w; }
+    public double getFovDegrees() { return fovDegrees; }
+    public double getFovRadians() { return fovRadians; }
+    public double getViewportHeight() { return viewportHeight; }
+    public double getViewportWidth() { return viewportWidth; }
+
 }

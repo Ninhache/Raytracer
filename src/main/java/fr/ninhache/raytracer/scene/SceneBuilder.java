@@ -57,7 +57,7 @@ public class SceneBuilder {
      * @param height hauteur en pixels (doit être > 0)
      * @throws ParseException si les dimensions sont invalides
      */
-    public void setSize(int width, int height) throws ParseException {
+    public SceneBuilder setSize(int width, int height) throws ParseException {
         if (width <= 0 || height <= 0) {
             throw new ParseException(
                     String.format("Dimensions invalides : %dx%d (doivent être > 0)", width, height)
@@ -65,6 +65,8 @@ public class SceneBuilder {
         }
         this.width = width;
         this.height = height;
+
+        return this;
     }
 
     /**
@@ -72,8 +74,9 @@ public class SceneBuilder {
      *
      * @param filename nom du fichier (ex: "scene1.png")
      */
-    public void setOutputFilename(String filename) {
+    public SceneBuilder setOutputFilename(String filename) {
         this.outputFilename = filename != null ? filename : "output.png";
+        return this;
     }
 
     /**
@@ -81,8 +84,9 @@ public class SceneBuilder {
      *
      * @param camera la caméra
      */
-    public void setCamera(Camera camera) {
+    public SceneBuilder setCamera(Camera camera) {
         this.camera = camera;
+        return this;
     }
 
     /**
@@ -91,10 +95,11 @@ public class SceneBuilder {
      * @param ambient couleur ambiante (composantes entre 0 et 1)
      * @throws ParseException si les composantes sont invalides
      */
-    public void setAmbientLight(Color ambient) throws ParseException {
+    public SceneBuilder setAmbientLight(Color ambient) throws ParseException {
         validateColorRange(ambient, "ambient");
         this.ambientLight = ambient;
         validateMaterialConstraint();
+        return this;
     }
 
     /**
@@ -103,10 +108,11 @@ public class SceneBuilder {
      * @param diffuse couleur diffuse
      * @throws ParseException si invalide ou si ambient+diffuse > 1
      */
-    public void setDiffuse(Color diffuse) throws ParseException {
+    public SceneBuilder setDiffuse(Color diffuse) throws ParseException {
         validateColorRange(diffuse, "diffuse");
         currentMaterial = new Material(diffuse, currentMaterial.getSpecular(), currentMaterial.getShininess());
         validateMaterialConstraint();
+        return this;
     }
 
     /**
@@ -115,17 +121,19 @@ public class SceneBuilder {
      * @param specular couleur spéculaire
      * @throws ParseException si les composantes sont invalides
      */
-    public void setSpecular(Color specular) throws ParseException {
+    public SceneBuilder setSpecular(Color specular) throws ParseException {
         validateColorRange(specular, "specular");
         currentMaterial = new Material(currentMaterial.getDiffuse(), specular, currentMaterial.getShininess());
+        return this;
     }
 
-    public void setShininess(double shininess) throws ParseException {
+    public SceneBuilder setShininess(double shininess) throws ParseException {
         if (shininess < 0 || shininess > 100) {
             throw new ParseException("shininess doit être compris entre 0 et 100");
         }
 
         currentMaterial = new Material(currentMaterial.getDiffuse(), currentMaterial.getSpecular(), shininess);
+        return this;
     }
 
 
@@ -158,7 +166,7 @@ public class SceneBuilder {
      * @param light la source lumineuse
      * @throws ParseException si la somme des intensités dépasse 1.0
      */
-    public void addLight(ILight light) throws ParseException {
+    public SceneBuilder addLight(ILight light) throws ParseException {
         Color newTotal = totalLightIntensity.add(light.getColor());
 
         if (newTotal.r() > 1.0 || newTotal.g() > 1.0 || newTotal.b() > 1.0) {
@@ -176,6 +184,7 @@ public class SceneBuilder {
 
         totalLightIntensity = newTotal;
         lights.add(light);
+        return this;
     }
 
     /**
@@ -185,9 +194,10 @@ public class SceneBuilder {
      *
      * @param shape la forme à ajouter
      */
-    public void addShape(IShape shape) {
-        shape.setMaterial(currentMaterial);
+    public SceneBuilder addShape(IShape shape) {
+        shape.setMaterial(currentMaterial.copy());
         shapes.add(shape);
+        return this;
     }
 
     /**
@@ -196,7 +206,7 @@ public class SceneBuilder {
      * @param maxVertices nombre maximal de vertices
      * @throws ParseException si déjà défini ou invalide
      */
-    public void setMaxVertices(int maxVertices) throws ParseException {
+    public SceneBuilder setMaxVertices(int maxVertices) throws ParseException {
         if (this.maxVertices > 0) {
             throw new ParseException("maxverts déjà défini");
         }
@@ -204,6 +214,7 @@ public class SceneBuilder {
             throw new ParseException("maxverts doit être > 0");
         }
         this.maxVertices = maxVertices;
+        return this;
     }
 
     /**
@@ -212,7 +223,7 @@ public class SceneBuilder {
      * @param vertex le point à ajouter
      * @throws ParseException si le nombre de vertices dépasse maxVertices
      */
-    public void addVertex(Point vertex) throws ParseException {
+    public SceneBuilder addVertex(Point vertex) throws ParseException {
         if (maxVertices == 0) {
             throw new ParseException("maxverts doit être défini avant de déclarer des vertices");
         }
@@ -223,6 +234,7 @@ public class SceneBuilder {
             );
         }
         vertices.add(vertex);
+        return this;
     }
 
     /**

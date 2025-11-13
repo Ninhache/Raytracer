@@ -1,11 +1,16 @@
 package fr.ninhache.raytracer.scene;
 
 import fr.ninhache.raytracer.geometry.IShape;
+import fr.ninhache.raytracer.geometry.Intersection;
+import fr.ninhache.raytracer.geometry.Ray;
 import fr.ninhache.raytracer.lighting.ILight;
 import fr.ninhache.raytracer.math.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
+import static fr.ninhache.raytracer.math.Epsilon.EPS;
 
 /**
  * Représente une scène 3D complète pour le raytracing.
@@ -130,5 +135,30 @@ public final class Scene {
     public String toString() {
         return String.format("Scene[%dx%d, %d shapes, %d lights, output=%s]",
                 width, height, shapes.size(), lights.size(), outputFilename);
+    }
+
+    /**
+     * Recherche la première intersection entre un rayon et les objets de la scène.
+     *
+     * @param ray le rayon lancé depuis la caméra
+     * @return l'intersection la plus proche, ou {@code Optional.empty()} si rien n'est touché
+     */
+    public Optional<Intersection> findClosestIntersection(Ray ray) {
+        Intersection bestHit = null;
+        double bestT = Double.POSITIVE_INFINITY;
+
+        for (IShape shape : shapes) {
+            Optional<Intersection> hit = shape.intersect(ray);
+            if (hit.isPresent()) {
+                double t = hit.get().t;
+
+                if (t > EPS && t < bestT) {
+                    bestT = t;
+                    bestHit = hit.get();
+                }
+            }
+        }
+
+        return Optional.ofNullable(bestHit);
     }
 }

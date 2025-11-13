@@ -214,4 +214,33 @@ public abstract class AbstractVec3 {
         h = 31 * h + getClass().hashCode();
         return h;
     }
+
+    /**
+     * Indique si ce vecteur est (à une tolérance près) un vecteur unitaire.
+     *
+     * <p>Un vecteur est dit <strong>unitaire</strong> si sa norme vaut 1.
+     * En pratique, à cause des erreurs d'arrondi en virgule flottante,
+     * on accepte un petit écart autour de 1, contrôlé par le paramètre
+     * {@code tolerance}.
+     *
+     * <p>Plus précisément, cette méthode retourne {@code true} si :
+     * <pre>{@code
+     *     |length() - 1.0| <= tolerance
+     * }</pre>
+     *
+     * <h2>Utilisations typiques</h2>
+     * <ul>
+     *   <li>Vérifier qu'une direction de rayon est correctement normalisée</li>
+     *   <li>Vérifier que des normales de surface ont bien une norme de 1</li>
+     *   <li>Déclencher une renormalisation uniquement si nécessaire</li>
+     * </ul>
+     *
+     * @param tolerance tolérance admise sur la norme (doit être positive, par exemple {@code 1e-9})
+     * @return {@code true} si ce vecteur a une norme proche de 1 à {@code tolerance} près,
+     *         {@code false} sinon
+     */
+    public boolean isUnit(double tolerance) {
+        double len = length();
+        return Math.abs(len - 1.0) <= tolerance;
+    }
 }

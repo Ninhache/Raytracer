@@ -1,6 +1,11 @@
 package fr.ninhache.raytracer.geometry;
 
 import fr.ninhache.raytracer.math.Point;
+import fr.ninhache.raytracer.math.Vector;
+
+import java.util.Optional;
+
+import static fr.ninhache.raytracer.math.Epsilon.EPS;
 
 /**
  * Représente une sphère dans l'espace 3D.
@@ -72,5 +77,40 @@ public final class Sphere extends AbstractShape {
     @Override
     public String toString() {
         return describe();
+    }
+
+    @Override
+    public Optional<Intersection> intersect(Ray ray) {
+        if (ray == null) {
+            return Optional.empty();
+        }
+
+        // (o - c) vector
+        Vector oc = ray.getOrigin().sub(center); // Point - Point = Vector
+        Vector d = ray.getDirection();
+
+        double a = d.dot(d); // =1 si d est unitaire
+        double b = 2.0 * oc.dot(d);
+        double c = oc.dot(oc) - radius * radius;
+        double disc = b*b - 4*a*c;
+        if (disc < 0.0) {
+            return Optional.empty();
+        }
+
+        double sqrt = Math.sqrt(disc);
+        double inv2a = 1.0 / (2.0 * a);
+        double t1 = (-b - sqrt) * inv2a;
+        double t2 = (-b + sqrt) * inv2a;
+
+        double t = Double.POSITIVE_INFINITY;
+        if (t1 > EPS) t = t1;
+        if (t2 > EPS && t2 < t) t = t2;
+        if (!Double.isFinite(t) || t <= EPS) return Optional.empty();
+
+        // construire l'intersection
+        var p = ray.at(t);
+        var n = p.sub(center).normalized();
+
+        return Optional.of(new Intersection(t, p, n, this));
     }
 }

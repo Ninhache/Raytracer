@@ -1,7 +1,6 @@
 package fr.ninhache;
 
-import fr.ninhache.raytracer.geometry.IShape;
-import fr.ninhache.raytracer.lighting.ILight;
+import fr.ninhache.raytracer.render.Renderer;
 import fr.ninhache.raytracer.scene.Scene;
 import fr.ninhache.raytracer.scene.SceneLoader;
 
@@ -61,7 +60,7 @@ public class Main {
         try {
 //            String sceneFile = args[0];
             // temporaire
-            String sceneFile = "/home/neo/imt/coo/tp3/src/main/resources/scenes/jalon2/test2.txt";
+            String sceneFile = "/home/neo/imt/coo/tp3/src/main/resources/scenes/jalon3/tp31.test";
 
             System.out.println("Chargement du fichier: " + sceneFile);
 
@@ -73,6 +72,14 @@ public class Main {
              System.out.println("Sortie: " + scene.getOutputFilename());
              System.out.println("Objets: " + scene.getShapeCount());
              System.out.println("Lumières: " + scene.getLightCount());
+
+
+            Renderer renderer = new Renderer();
+            BufferedImage img = renderer.render(scene);
+            String out = scene.getOutputFilename();
+            if (out == null || out.isEmpty()) out = "output.png";
+            renderer.writeToFile(out, img);
+            System.out.println("Image écrite : " + out);
 
 
         } catch (Exception e) {
