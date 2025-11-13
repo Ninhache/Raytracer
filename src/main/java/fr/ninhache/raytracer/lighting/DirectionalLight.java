@@ -1,6 +1,7 @@
 package fr.ninhache.raytracer.lighting;
 
 import fr.ninhache.raytracer.math.Color;
+import fr.ninhache.raytracer.math.Point;
 import fr.ninhache.raytracer.math.Vector;
 
 /**
@@ -46,5 +47,10 @@ public final class DirectionalLight extends AbstractLight {
     @Override
     public String toString() {
         return describe();
+    }
+
+    @Override
+    public Vector incidentFrom(Point hitPoint) {
+        return direction;
     }
 }

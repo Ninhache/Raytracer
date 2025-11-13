@@ -2,36 +2,23 @@ package fr.ninhache.raytracer.lighting;
 
 import fr.ninhache.raytracer.math.Color;
 import fr.ninhache.raytracer.math.Point;
+import fr.ninhache.raytracer.math.Vector;
 
-/**
- * Représente une source lumineuse ponctuelle (ampoule, bougie, lampe)
- */
+/** Lumière ponctuelle. */
 public final class PointLight extends AbstractLight {
-
     private final Point position;
 
-    /**
-     * Crée une lumière ponctuelle.
-     *
-     * @param position position de la source lumineuse
-     * @param color couleur/intensité de la lumière
-     * @throws IllegalArgumentException si position est null
-     */
     public PointLight(Point position, Color color) {
         super(color);
-
-        if (position == null) {
-            throw new IllegalArgumentException("La position ne peut pas être null");
-        }
-
+        if (position == null) throw new IllegalArgumentException("position ne peut pas être null");
         this.position = position;
     }
 
-    /**
-     * @return la position de la source lumineuse
-     */
-    public Point getPosition() {
-        return position;
+    public Point getPosition() { return position; }
+
+
+    public Vector incidentFrom(Point hitPoint) {
+        return position.sub(hitPoint).normalized();
     }
 
     @Override

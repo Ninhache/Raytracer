@@ -91,8 +91,9 @@ public class ParsingContext {
         return currentDiffuse;
     }
 
-    public void setCurrentDiffuse(Color diffuse) {
+    public void setCurrentDiffuse(Color diffuse) throws ParseException {
         this.currentDiffuse = diffuse;
+        this.sceneBuilder.setDiffuse(diffuse);
     }
 
     public Color getCurrentSpecular() {
