@@ -102,6 +102,12 @@ public final class SpotLight extends AbstractLight {
         }
     }
 
+
+    @Override
+    public Vector incidentFrom(Point hitPoint) {
+        return null;
+    }
+
     @Override
     public String describe() {
         return String.format("SpotLight[position=%s, direction=%s, cone=%.1f°, color=%s]",
