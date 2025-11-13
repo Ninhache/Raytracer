@@ -1,9 +1,11 @@
 package fr.ninhache.raytracer.geometry;
 
+import fr.ninhache.raytracer.math.Epsilon;
 import fr.ninhache.raytracer.math.Point;
 import fr.ninhache.raytracer.math.Vector;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Représente un polygone régulier (futur).
@@ -102,5 +104,33 @@ public final class RegularPolygon extends AbstractShape {
     public String describe() {
         return String.format("RegularPolygon[center=%s, radius=%.3f, sides=%d, material=%s]",
                 center, radius, sides, material);
+    }
+
+    /**
+     * Calcule l'intersection avec le polygone régulier en testant ses triangles internes.
+     *
+     * @param ray le rayon incident
+     * @return la plus proche intersection positive, ou {@code Optional.empty()} si aucune
+     */
+    @Override
+    public Optional<Intersection> intersect(Ray ray) {
+        Intersection bestHit = null;
+        double bestT = Double.POSITIVE_INFINITY;
+
+        for (Triangle tri : triangles) {
+            Optional<Intersection> hit = tri.intersect(ray);
+            if (hit.isPresent()) {
+                double t = hit.get().t;
+                if (t > Epsilon.EPS && t < bestT) {
+                    bestT = t;
+                    Intersection h = hit.get();
+
+                    // On remplace la forme par ce RegularPolygon pour l'étape de shading
+                    bestHit = new Intersection(t, h.point, h.normal, this);
+                }
+            }
+        }
+
+        return Optional.ofNullable(bestHit);
     }
 }

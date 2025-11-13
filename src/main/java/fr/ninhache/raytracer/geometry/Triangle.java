@@ -1,8 +1,11 @@
 package fr.ninhache.raytracer.geometry;
 
-import fr.ninhache.raytracer.math.Epsilon;
 import fr.ninhache.raytracer.math.Point;
 import fr.ninhache.raytracer.math.Vector;
+
+import java.util.Optional;
+
+import static fr.ninhache.raytracer.math.Epsilon.EPS;
 
 /**
  * Représente un triangle dans l'espace 3D.
@@ -65,7 +68,7 @@ public final class Triangle extends AbstractShape {
         Vector crossProduct = edge1.cross(edge2);
         double crossLength = crossProduct.length();
 
-        if (crossLength < Epsilon.EPS) {
+        if (crossLength < EPS) {
             throw new IllegalArgumentException(
                     "Les sommets sont colinéaires, impossible de créer un triangle : " +
                             v1 + ", " + v2 + ", " + v3
@@ -134,5 +137,57 @@ public final class Triangle extends AbstractShape {
     @Override
     public String toString() {
         return describe();
+    }
+
+    /**
+     * Calcule l'intersection rayon-triangle avec l'algorithme de Möller-Trumbore.
+     *
+     * @param ray le rayon incident
+     * @return la plus proche intersection positive, ou {@code Optional.empty()} si aucune
+     */
+    @Override
+    public Optional<Intersection> intersect(Ray ray) {
+        Vector dir = ray.getDirection();
+        Point origin = ray.getOrigin();
+
+        // Vecteur perpendiculaire à dir et edge2
+        Vector pvec = dir.cross(edge2);
+        double det = edge1.dot(pvec);
+
+        // Si det est proche de 0, le rayon est parallèle au plan du triangle
+        if (Math.abs(det) < EPS) {
+            return Optional.empty();
+        }
+
+        double invDet = 1.0 / det;
+
+        // Vecteur de v1 vers l'origine du rayon
+        Vector tvec = origin.sub(v1);
+
+        double u = tvec.dot(pvec) * invDet;
+        if (u < 0.0 || u > 1.0) {
+            return Optional.empty();
+        }
+
+        Vector qvec = tvec.cross(edge1);
+        double v = dir.dot(qvec) * invDet;
+        if (v < 0.0 || u + v > 1.0) {
+            return Optional.empty();
+        }
+
+        double t = edge2.dot(qvec) * invDet;
+        if (t <= EPS) {
+            return Optional.empty();
+        }
+
+        Point hitPoint = ray.at(t);
+
+        // Normale orientée pour être opposée à la direction du rayon
+        Vector hitNormal = normal;
+        if (hitNormal.dot(dir) > 0.0) {
+            hitNormal = hitNormal.negate();
+        }
+
+        return Optional.of(new Intersection(t, hitPoint, hitNormal, this));
     }
 }

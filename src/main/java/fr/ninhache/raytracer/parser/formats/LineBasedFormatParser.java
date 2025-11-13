@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
  * et délègue l'interprétation au TokenProcessorRegistry.
  */
 @FileFormatParser(
-        extensions = {".txt", ".scene"},
+        extensions = {".txt", ".scene", ".test"},
         description = "Format texte ligne par ligne"
 )
 public class LineBasedFormatParser implements FormatParser {

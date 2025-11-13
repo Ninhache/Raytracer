@@ -3,6 +3,10 @@ package fr.ninhache.raytracer.geometry;
 import fr.ninhache.raytracer.math.Point;
 import fr.ninhache.raytracer.math.Vector;
 
+import java.util.Optional;
+
+import static fr.ninhache.raytracer.math.Epsilon.EPS;
+
 /**
  * Représente un plan infini dans l'espace 3D.
  *
@@ -96,5 +100,39 @@ public final class Plane extends AbstractShape {
     @Override
     public String toString() {
         return describe();
+    }
+
+    /**
+     * Calcule l'intersection entre ce rayon et ce plan infini.
+     *
+     * <p>On résout (O + tD - P0) · n = 0, soit :
+     * t = (P0 - O) · n / (D · n)
+     *
+     * @param ray le rayon incident
+     * @return la plus proche intersection positive, ou {@code Optional.empty()} si aucune
+     */
+    @Override
+    public Optional<Intersection> intersect(Ray ray) {
+        Vector dir = ray.getDirection();
+        Point origin = ray.getOrigin();
+
+        double denom = dir.dot(normal);
+
+        // Si denom est proche de 0, le rayon est (presque) parallèle au plan
+        if (Math.abs(denom) < EPS) {
+            return Optional.empty();
+        }
+
+        // vecteur de l'origine du rayon vers le point de référence du plan
+        Vector p0l0 = point.sub(origin);
+        double t = p0l0.dot(normal) / denom;
+
+        if (t <= EPS) {
+            return Optional.empty();
+        }
+
+        Point hitPoint = ray.at(t);
+
+        return Optional.of(new Intersection(t, hitPoint, normal, this));
     }
 }

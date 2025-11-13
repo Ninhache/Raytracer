@@ -73,4 +73,8 @@ public class Material {
     public String toString() {
         return String.format("Material[diffuse=%s, specular=%s]", diffuse, specular);
     }
+
+    public Material copy() {
+        return new Material(diffuse, specular, shininess);
+    }
 }

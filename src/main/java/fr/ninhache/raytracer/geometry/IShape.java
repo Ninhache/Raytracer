@@ -6,7 +6,7 @@ import fr.ninhache.raytracer.scene.Material;
  * Interface représentant une forme géométrique dans la scène.
  *
  */
-public interface IShape {
+public interface IShape extends Intersectable {
 
     /**
      * Définit le matériau de cette forme.
