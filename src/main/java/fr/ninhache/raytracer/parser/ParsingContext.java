@@ -79,8 +79,8 @@ public class ParsingContext {
         return currentAmbient;
     }
 
-    public void setCurrentAmbient(Color ambient) {
-        this.currentAmbient = ambient;
+    public void setCurrentAmbient(Color ambient) throws ParseException {
+        this.sceneBuilder.setAmbientLight(ambient);
     }
 
     public void setCurrentShininess(double shininess) throws ParseException {
