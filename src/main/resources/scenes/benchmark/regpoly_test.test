@@ -1,0 +1,29 @@
+size 800 600
+output regpoly_test.png
+
+camera 0 3 10   0 1 0   0 1 0   45
+
+ambient 0.1 0.1 0.1
+
+directional -1 -1 -1   0.4 0.4 0.4
+point 3 5 4            0.3 0.3 0.3
+
+maxdepth 3
+
+# Sol simple
+diffuse 0.15 0.15 0.15
+specular 0.3 0.3 0.3
+shininess 30
+plane 0 0 0   0 1 0
+
+# Gros polygone régulier (genre octogone) posé sur le sol
+diffuse 0.6 0.2 0.2
+specular 0.4 0.4 0.4
+shininess 50
+regpoly 0 1 0   2.5  8   0 1 0
+
+# Une petite sphère au-dessus pour vérifier les ombres
+diffuse 0.2 0.6 0.8
+specular 0.8 0.8 0.8
+shininess 80
+sphere 0 2.2 0  0.6
