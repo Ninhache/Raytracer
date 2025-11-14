@@ -1,5 +1,7 @@
-package fr.ninhache.raytracer.geometry;
+package fr.ninhache.raytracer.geometry.shape;
 
+import fr.ninhache.raytracer.geometry.Intersection;
+import fr.ninhache.raytracer.geometry.Ray;
 import fr.ninhache.raytracer.math.Point;
 import fr.ninhache.raytracer.math.Vector;
 

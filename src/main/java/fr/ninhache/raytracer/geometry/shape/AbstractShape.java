@@ -1,5 +1,6 @@
-package fr.ninhache.raytracer.geometry;
+package fr.ninhache.raytracer.geometry.shape;
 
+import fr.ninhache.raytracer.geometry.IShape;
 import fr.ninhache.raytracer.scene.Material;
 
 /**

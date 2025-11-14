@@ -1,5 +1,6 @@
 package fr.ninhache.raytracer.geometry;
 
+import fr.ninhache.raytracer.geometry.shape.Sphere;
 import fr.ninhache.raytracer.math.Point;
 import fr.ninhache.raytracer.math.Vector;
 import org.junit.jupiter.api.DisplayName;

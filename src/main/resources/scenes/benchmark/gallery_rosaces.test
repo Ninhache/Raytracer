@@ -1,0 +1,152 @@
+size 1024 768
+output gallery_rosaces.png
+
+# Caméra centrée, légèrement en hauteur
+camera 0 1.5 9   0 1 0   0 1 0   45
+
+# Lumière ambiante
+ambient 0.1 0.1 0.1
+
+# Éclairage global (somme ≈ 1.0)
+directional -1 -1 -1   0.35 0.35 0.35
+point 3 3 2            0.35 0.35 0.35
+point -3 2 -3          0.30 0.30 0.30
+
+# Profondeur maximale de réflexion
+maxdepth 6
+
+
+########################
+# Salle de miroirs
+########################
+
+# Sol miroir
+diffuse 0.15 0.15 0.17
+specular 0.85 0.85 0.85
+shininess 220
+plane 0 0 0   0 1 0
+
+# Plafond légèrement moins brillant
+diffuse 0.05 0.05 0.08
+specular 0.6 0.6 0.6
+shininess 150
+plane 0 3 0   0 -1 0
+
+# Mur gauche (x = -3)
+diffuse 0.10 0.12 0.18
+specular 0.75 0.75 0.8
+shininess 120
+plane -3 1 0   1 0 0
+
+# Mur droit (x = 3)
+diffuse 0.10 0.18 0.12
+specular 0.75 0.8 0.75
+shininess 120
+plane 3 1 0   -1 0 0
+
+# Mur du fond (z = -6)
+diffuse 0.12 0.10 0.12
+specular 0.8 0.8 0.8
+shininess 150
+plane 0 1 -6   0 0 1
+
+
+
+########################
+# Rosaces murales (back wall)
+########################
+
+# Grande rosace centrale (polygone régulier à 16 côtés)
+diffuse 0.55 0.35 0.20
+specular 0.7 0.7 0.7
+shininess 80
+regpoly 0 1.7 -5.9   1.4  16   0 0 1
+
+# Anneau "visuel" en jouant sur la couleur (polygone plus petit)
+diffuse 0.25 0.10 0.05
+specular 0.3 0.3 0.3
+shininess 40
+regpoly 0 1.7 -5.88   0.9  12   0 0 1
+
+# Petite rosace au centre
+diffuse 0.7 0.7 0.7
+specular 0.9 0.9 0.9
+shininess 160
+regpoly 0 1.7 -5.86   0.45  8   0 0 1
+
+# Rosace gauche
+diffuse 0.2 0.35 0.6
+specular 0.6 0.6 0.7
+shininess 100
+regpoly -2.0 1.4 -5.9   0.8  10   0 0 1
+
+# Rosace droite
+diffuse 0.2 0.6 0.35
+specular 0.6 0.7 0.6
+shininess 100
+regpoly 2.0 1.4 -5.9   0.8  10   0 0 1
+
+
+
+########################
+# Motifs au sol (polygones presque collés au plan)
+########################
+
+# Grand motif central (au sol, très proche de y=0)
+diffuse 0.35 0.20 0.30
+specular 0.3 0.3 0.3
+shininess 40
+regpoly 0 0.02 -1.5   1.6  12   0 1 0
+
+# Motif intérieur, couleur différente
+diffuse 0.15 0.08 0.20
+specular 0.25 0.25 0.25
+shininess 30
+regpoly 0 0.03 -1.5   1.0  8   0 1 0
+
+# Petit polygone central
+diffuse 0.65 0.65 0.65
+specular 0.7 0.7 0.7
+shininess 120
+regpoly 0 0.04 -1.5   0.4  6   0 1 0
+
+# Deux "médaillons" vers l'avant
+diffuse 0.25 0.25 0.4
+specular 0.4 0.4 0.5
+shininess 60
+regpoly -1.5 0.02 0.5   0.7  8   0 1 0
+
+diffuse 0.25 0.4 0.25
+specular 0.4 0.5 0.4
+shininess 60
+regpoly 1.5 0.02 0.5   0.7  8   0 1 0
+
+
+
+########################
+# Objets "sculptures" (sphères)
+########################
+
+# Sphère centrale légèrement métallique
+diffuse 0.55 0.5 0.25
+specular 0.9 0.9 0.9
+shininess 200
+sphere 0 1.3 -2.0  1.2
+
+# Sphère rouge à gauche
+diffuse 0.7 0.15 0.15
+specular 0.5 0.4 0.4
+shininess 80
+sphere -2.0 0.9 -1.0  0.9
+
+# Sphère bleu-vert à droite
+diffuse 0.15 0.5 0.55
+specular 0.6 0.7 0.8
+shininess 100
+sphere 2.0 1.1 -2.5  1.0
+
+# Petite sphère blanche brillante qui capte bien les reflets
+diffuse 0.8 0.8 0.8
+specular 1.0 1.0 1.0
+shininess 260
+sphere 0.4 0.5 -0.2  0.4

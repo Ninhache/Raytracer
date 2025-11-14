@@ -21,7 +21,7 @@ public interface ILight {
     Vector incidentFrom(Point hitPoint);
 
     /**
-     * @return une description textuelle de la lumière (pour débogage)
+     * @return une description textuelle de la lumière
      */
     String describe();
 }

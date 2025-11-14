@@ -159,4 +159,8 @@ public class ParsingContext {
         this.sceneBuilder.setSize(width, height);
     }
 
+    public void setMaxDepth(int maxDepth) throws ParseException {
+        this.sceneBuilder.setMaxDepth(maxDepth);
+    }
+
 }

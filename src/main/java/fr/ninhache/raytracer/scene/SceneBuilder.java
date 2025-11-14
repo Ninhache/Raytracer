@@ -49,6 +49,7 @@ public class SceneBuilder {
     private final List<IShape> shapes = new ArrayList<>();
     private final List<Point> vertices = new ArrayList<>();
     private int maxVertices = 0;
+    private int maxDepth = 1;
 
     /**
      * Définit la taille de l'image à générer.
@@ -128,15 +129,23 @@ public class SceneBuilder {
     }
 
     public SceneBuilder setShininess(double shininess) throws ParseException {
+        /*
         if (shininess < 0 || shininess > 100) {
             throw new ParseException("shininess doit être compris entre 0 et 100");
         }
+        */
 
         currentMaterial = new Material(currentMaterial.getDiffuse(), currentMaterial.getSpecular(), shininess);
         return this;
     }
 
-
+    public SceneBuilder setMaxDepth(int maxDepth) throws ParseException {
+        if (maxDepth < 1) {
+            throw new ParseException("maxdepth doit être >= 1");
+        }
+        this.maxDepth = maxDepth;
+        return this;
+    }
 
     /**
      * Valide que ambient + diffuse ≤ 1.0 sur chaque composante.
@@ -274,7 +283,7 @@ public class SceneBuilder {
         return new Scene(
                 width, height, outputFilename,
                 camera, ambientLight,
-                lights, shapes
+                lights, shapes, maxDepth
         );
     }
 
