@@ -45,6 +45,7 @@ public final class Scene {
     private final Color ambientLight;
     private final List<ILight> lights;
     private final List<IShape> shapes;
+    private final int maxDepth;
 
     /**
      * Construit une scène (utilisez {@link SceneBuilder}).
@@ -58,7 +59,7 @@ public final class Scene {
      * @param shapes liste des objets géométriques
      */
     Scene(int width, int height, String outputFilename, Camera camera,
-          Color ambientLight, List<ILight> lights, List<IShape> shapes) {
+          Color ambientLight, List<ILight> lights, List<IShape> shapes, int maxDepth) {
         this.width = width;
         this.height = height;
         this.outputFilename = outputFilename;
@@ -66,6 +67,7 @@ public final class Scene {
         this.ambientLight = ambientLight;
         this.lights = Collections.unmodifiableList(new ArrayList<>(lights));
         this.shapes = Collections.unmodifiableList(new ArrayList<>(shapes));
+        this.maxDepth = maxDepth;
     }
 
     /**
@@ -160,5 +162,9 @@ public final class Scene {
         }
 
         return Optional.ofNullable(bestHit);
+    }
+
+    public int getMaxDepth() {
+        return maxDepth;
     }
 }

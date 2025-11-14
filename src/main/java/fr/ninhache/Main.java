@@ -60,7 +60,7 @@ public class Main {
         try {
 //            String sceneFile = args[0];
             // temporaire
-            String sceneFile = "/home/neo/imt/coo/tp3/src/main/resources/scenes/jalon3/tp31.test";
+            String sceneFile = "/home/neo/imt/coo/tp3/demoreflexion.test";
 
             System.out.println("Chargement du fichier: " + sceneFile);
 
