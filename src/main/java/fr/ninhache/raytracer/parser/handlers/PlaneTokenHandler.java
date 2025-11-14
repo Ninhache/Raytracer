@@ -1,6 +1,6 @@
 package fr.ninhache.raytracer.parser.handlers;
 
-import fr.ninhache.raytracer.geometry.Plane;
+import fr.ninhache.raytracer.geometry.shape.Plane;
 import fr.ninhache.raytracer.math.Point;
 import fr.ninhache.raytracer.math.Vector;
 import fr.ninhache.raytracer.parser.ParsingContext;
