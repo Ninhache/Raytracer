@@ -1,5 +1,7 @@
 package fr.ninhache;
 
+import fr.ninhache.raytracer.render.RenderResult;
+import fr.ninhache.raytracer.render.RenderStats;
 import fr.ninhache.raytracer.render.Renderer;
 import fr.ninhache.raytracer.scene.Scene;
 import fr.ninhache.raytracer.scene.SceneLoader;
@@ -60,7 +62,7 @@ public class Main {
         try {
 //            String sceneFile = args[0];
             // temporaire
-            String sceneFile = "/home/neo/imt/coo/tp3/demoreflexion.test";
+            String sceneFile = "/home/neo/imt/coo/tp3/src/main/resources/scenes/benchmark/gallery_rosaces.test";
 
             System.out.println("Chargement du fichier: " + sceneFile);
 
@@ -75,12 +77,16 @@ public class Main {
 
 
             Renderer renderer = new Renderer();
-            BufferedImage img = renderer.render(scene);
+            RenderResult renderResult = renderer.render(scene);
+
+            BufferedImage img = renderResult.image();
+            RenderStats stats = renderResult.stats();
+
             String out = scene.getOutputFilename();
             if (out == null || out.isEmpty()) out = "output.png";
             renderer.writeToFile(out, img);
             System.out.println("Image écrite : " + out);
-
+            System.out.println("Statistiques approximatives : " + stats);
 
         } catch (Exception e) {
             System.err.println("Erreur: " + e.getMessage());
