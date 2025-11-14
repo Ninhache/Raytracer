@@ -1,0 +1,87 @@
+size 800 600
+output gallery_mirrors.png
+
+# Caméra : légèrement en hauteur, face à la “galerie”
+camera 0 1.5 8   0 1 0   0 1 0   45
+
+# Lumière ambiante globale
+ambient 0.1 0.1 0.1
+
+# Éclairage : somme des composantes <= 1.0
+directional -1 -1 -1   0.3 0.3 0.3
+point 2 3 2            0.4 0.4 0.4
+point -2 2 -3          0.3 0.3 0.3
+
+# Profondeur max pour les réflexions
+maxdepth 6
+
+# =========================
+#  Salle de miroirs (box)
+# =========================
+
+# Sol miroir
+diffuse 0.15 0.15 0.15
+specular 0.9 0.9 0.9
+shininess 200
+# centre (0,0,0), normale vers le haut
+plane 0 0 0   0 1 0
+
+# Plafond légèrement moins réfléchi
+diffuse 0.05 0.05 0.05
+specular 0.8 0.8 0.8
+shininess 150
+plane 0 3 0   0 -1 0
+
+# Mur gauche (x = -3), un peu bleuté
+diffuse 0.10 0.10 0.20
+specular 0.8 0.8 0.9
+shininess 120
+plane -3 1 0   1 0 0
+
+# Mur droit (x = 3), un peu vert
+diffuse 0.10 0.20 0.10
+specular 0.8 0.9 0.8
+shininess 120
+plane 3 1 0   -1 0 0
+
+# Mur du fond (z = -4), léger rouge
+diffuse 0.15 0.10 0.10
+specular 0.9 0.8 0.8
+shininess 160
+plane 0 1 -4   0 0 1
+
+# (pas de mur devant, pour laisser la caméra regarder dans la pièce)
+
+# =========================
+#  Objets dans la galerie
+# =========================
+
+# Grosse sphère jaune métallisée au centre
+diffuse 0.6 0.6 0.2
+specular 0.9 0.9 0.9
+shininess 150
+sphere 0 1.4 -1.8  1.4
+
+# Sphère rouge matte à gauche
+diffuse 0.7 0.1 0.1
+specular 0.3 0.3 0.3
+shininess 40
+sphere -1.8 0.9 -1.2  0.9
+
+# Sphère verte brillante à droite
+diffuse 0.1 0.7 0.1
+specular 0.7 0.7 0.7
+shininess 80
+sphere 1.9 1.0 -2.2  1.0
+
+# Petite sphère bleutée très spéculaire au milieu
+diffuse 0.1 0.3 0.7
+specular 0.9 0.9 1.0
+shininess 200
+sphere 0.3 0.7 -0.5  0.6
+
+# Petite bille blanche très brillante proche du sol
+diffuse 0.8 0.8 0.8
+specular 1.0 1.0 1.0
+shininess 250
+sphere 0.6 0.35 -3.0  0.35
