@@ -8,6 +8,7 @@ import fr.ninhache.raytracer.lighting.SpotLight;
 import fr.ninhache.raytracer.math.Color;
 import fr.ninhache.raytracer.math.Point;
 import fr.ninhache.raytracer.math.Vector;
+import fr.ninhache.raytracer.render.stats.RayStats;
 import fr.ninhache.raytracer.scene.Camera;
 import fr.ninhache.raytracer.scene.Scene;
 
@@ -28,7 +29,7 @@ public final class RayTracer {
      * Calcule la couleur d'un pixel (i,j) en lançant un rayon primaire
      * depuis la caméra et en appelant la fonction récursive traceRay.
      */
-    public Color getPixelColor(Scene scene, int i, int j) {
+    public Color getPixelColor(Scene scene, int i, int j, RayStats stats) {
         Camera cam = scene.getCamera();
         int W = scene.getWidth(), H = scene.getHeight();
 
@@ -48,7 +49,12 @@ public final class RayTracer {
                 .normalized();
 
         Ray primary = new Ray(cam.getLookFrom(), dir);
-        return traceRay(scene, primary, 1);
+
+        if (stats != null) {
+            stats.incPrimary();
+        }
+
+        return traceRay(scene, primary, 1, stats);
     }
 
     /**
@@ -58,7 +64,7 @@ public final class RayTracer {
      * @param ray   le rayon courant
      * @param depth profondeur actuelle (1 pour le rayon primaire)
      */
-    private Color traceRay(Scene scene, Ray ray, int depth) {
+    private Color traceRay(Scene scene, Ray ray, int depth, RayStats stats) {
         Optional<Intersection> ohit = scene.findClosestIntersection(ray);
         if (ohit.isEmpty()) {
             return Color.BLACK;
@@ -91,6 +97,9 @@ public final class RayTracer {
                 maxT = sl.getPosition().sub(shadowOrigin).length();
             }
 
+            if (stats != null) {
+                stats.incShadow();
+            }
             Ray shadowRay = new Ray(shadowOrigin, L);
             Optional<Intersection> occ = scene.findClosestIntersection(shadowRay);
             if (occ.isPresent()) {
@@ -126,11 +135,15 @@ public final class RayTracer {
         boolean hasSpecular = ks.r() > 0 || ks.g() > 0 || ks.b() > 0;
 
         if (depth < maxDepth && hasSpecular) {
+            if (stats != null) {
+                stats.incReflection();
+            }
+
             Vector reflDir = ray.getDirection().reflect(hit.normal).normalized();
             Point reflOrigin = hit.point.add(hit.normal.mul(EPS));
             Ray reflRay = new Ray(reflOrigin, reflDir);
 
-            Color reflected = traceRay(scene, reflRay, depth + 1);
+            Color reflected = traceRay(scene, reflRay, depth + 1, stats);
 
             Color reflContribution = ks.schur(reflected);
             color = color.add(reflContribution);

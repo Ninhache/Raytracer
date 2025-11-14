@@ -30,7 +30,7 @@ class RayTracerTest {
         RayTracer rt = new RayTracer();
         // On calcule manuellement -w et on vérifie que la direction est colinéaire et de même sens
 
-        var centerColor = rt.getPixelColor(scene, 1, 1); // juste pour exécuter le calcul
+        var centerColor = rt.getPixelColor(scene, 1, 1, null); // juste pour exécuter le calcul
 
         // Si aucune forme, c'est noir
         assertEquals(0x000000, centerColor.toRGB());
@@ -48,7 +48,7 @@ class RayTracerTest {
                 .build();
 
         RayTracer rt = new RayTracer();
-        Color c = rt.getPixelColor(scene, 50, 50); // centre
+        Color c = rt.getPixelColor(scene, 50, 50, null); // centre
         assertEquals(new Color(0.2,0.3,0.4).toRGB(), c.toRGB());
     }
 }
