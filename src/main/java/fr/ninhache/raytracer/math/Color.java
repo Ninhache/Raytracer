@@ -1,5 +1,7 @@
 package fr.ninhache.raytracer.math;
 
+import static java.lang.Math.clamp;
+
 /**
  * Représente une couleur RGB en virgule flottante.
  *
@@ -235,28 +237,11 @@ public final class Color extends AbstractVec3 {
      * @return un entier représentant la couleur au format RGB 24-bit
      */
     public int toRGB() {
-        // Clamping puis conversion vers [0, 255] avec TRONCATURE
         int red   = (int) (clamp(x, 0.0, 1.0) * 255);
         int green = (int) (clamp(y, 0.0, 1.0) * 255);
         int blue  = (int) (clamp(z, 0.0, 1.0) * 255);
 
-        // Packing RGB (le masquage 0xFF garantit des valeurs sur 8 bits)
         return ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | (blue & 0xFF);
-    }
-
-
-    /**
-     * Limite une valeur à l'intervalle [min, max].
-     *
-     * @param value la valeur à limiter
-     * @param min la borne inférieure
-     * @param max la borne supérieure
-     * @return {@code min} si {@code value < min}, {@code max} si {@code value > max}, {@code value} sinon
-     */
-    private static double clamp(double value, double min, double max) {
-        if (value < min) return min;
-        if (value > max) return max;
-        return value;
     }
 
     /**
