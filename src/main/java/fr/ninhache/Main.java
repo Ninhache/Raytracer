@@ -62,7 +62,7 @@ public class Main {
         try {
 //            String sceneFile = args[0];
             // temporaire
-            String sceneFile = "/home/neo/imt/coo/tp3/src/main/resources/scenes/benchmark/gallery_rosaces.test";
+            String sceneFile = "/home/neo/imt/coo/tp3/src/main/resources/scenes/jalon5/tp53.test";
 
             System.out.println("Chargement du fichier: " + sceneFile);
 
