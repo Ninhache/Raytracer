@@ -4,6 +4,7 @@ import fr.ninhache.raytracer.geometry.IShape;
 
 import fr.ninhache.raytracer.geometry.shape.Sphere;
 import fr.ninhache.raytracer.lighting.ILight;
+import fr.ninhache.raytracer.math.Color;
 import fr.ninhache.raytracer.scene.Camera;
 import fr.ninhache.raytracer.scene.Scene;
 import fr.ninhache.raytracer.scene.SceneBuilder;
@@ -22,19 +23,28 @@ public final class EditableScene {
     private final int width;
     private final int height;
     private final Camera camera;
+    private final Color ambientLight;
     private final List<EditableShape> shapes = new ArrayList<>();
     private final List<ILight> lights = new ArrayList<>();
     private final int maxDepth;
 
-    public EditableScene(int width, int height, Camera camera, int maxDepth) {
+    public EditableScene(int width, int height, Camera camera, int maxDepth, Color ambientLight) {
         this.width = width;
         this.height = height;
         this.camera = camera;
         this.maxDepth = maxDepth;
+        this.ambientLight = ambientLight;
     }
 
     public static EditableScene fromScene(Scene scene) {
-        EditableScene editable = new EditableScene(scene.getWidth(), scene.getHeight(), scene.getCamera(), scene.getMaxDepth());
+        EditableScene editable = new EditableScene(
+                scene.getWidth(),
+                scene.getHeight(),
+                scene.getCamera(),
+                scene.getMaxDepth(),
+                scene.getAmbientLight()
+        );
+
 
         for (IShape s : scene.getShapes()) {
             if (s instanceof Sphere sphere) {
@@ -67,7 +77,12 @@ public final class EditableScene {
      */
     public Scene toScene() throws ParseException {
         SceneBuilder builder = new SceneBuilder();
-        builder.setSize(width, height).setCamera(camera);
+        builder
+                .setSize(width, height)
+                .setCamera(camera)
+                .setAmbientLight(ambientLight)
+                .setMaxDepth(maxDepth);
+
 
         // System.out.println("Matériau shape: diffuse=" + mat.getDiffuse() + ", specular=" + mat.getSpecular() + ", shininess=" + mat.getShininess());
 
@@ -115,7 +130,7 @@ public final class EditableScene {
 
         @Override
         public IShape toShape() {
-            return null; // ignorée lors de la reconstruction
+            return delegate; // ignorée lors de la reconstruction
         }
 
         @Override
