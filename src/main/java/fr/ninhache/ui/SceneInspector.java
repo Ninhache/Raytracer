@@ -7,6 +7,7 @@ import fr.ninhache.ui.model.EditableShape;
 import fr.ninhache.ui.model.SceneDocument;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
@@ -26,7 +27,8 @@ public class SceneInspector extends TabPane {
     private final ListView<EditableShape> shapeList = new ListView<>();
     private final ListView<ILight> lightsList = new ListView<>();
 
-    BorderPane editorContainer = new BorderPane();
+    private final BorderPane editorContainer = new BorderPane();
+    private final ShapeEditorFactory editorFactory = new ShapeEditorFactory();
 
     public SceneInspector() {
         Tab sceneTab = new Tab("Scène", createSceneInfoPane());
@@ -70,7 +72,21 @@ public class SceneInspector extends TabPane {
 
     private VBox createObjectsPane() {
         shapeList.setPlaceholder(new Label("Aucun objet"));
-        VBox box = new VBox(shapeList);
+
+        shapeList.setCellFactory(list -> new javafx.scene.control.ListCell<>() {
+            @Override
+            protected void updateItem(EditableShape item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.name());
+            }
+        });
+
+        shapeList.getSelectionModel().selectedItemProperty().addListener((obs, old, shape) -> showEditor(shape));
+
+        editorContainer.setPadding(new Insets(6));
+        editorContainer.setCenter(new Label("Sélectionnez un objet pour l'éditer"));
+
+        VBox box = new VBox(8, shapeList, editorContainer);
         box.setPadding(new Insets(4));
         return box;
     }
@@ -105,11 +121,20 @@ public class SceneInspector extends TabPane {
         lblObjects.setText(Integer.toString(escene.getShapes().size()));
         lblLights.setText(Integer.toString(escene.getLights().size()));
 
-        // ✅ types cohérents maintenant
         shapeList.setItems(FXCollections.observableArrayList(escene.getShapes()));   // List<EditableShape>
         lightsList.setItems(FXCollections.observableArrayList(escene.getLights()));  // List<ILight>
+
+        if (!shapeList.getItems().isEmpty()) {
+            shapeList.getSelectionModel().selectFirst();
+        } else {
+            showEditor(null);
+        }
     }
 
+    private void showEditor(EditableShape shape) {
+        Node editor = editorFactory.createEditor(shape);
+        editorContainer.setCenter(editor);
+    }
 
     private void clear() {
         lblSize.setText("");
