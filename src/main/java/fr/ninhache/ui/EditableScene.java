@@ -27,14 +27,17 @@ public final class EditableScene {
     private final List<EditableShape> shapes = new ArrayList<>();
     private final List<ILight> lights = new ArrayList<>();
     private final int maxDepth;
+    private final Scene sourceScene;
 
-    public EditableScene(int width, int height, Camera camera, int maxDepth, Color ambientLight) {
+    public EditableScene(int width, int height, Camera camera, int maxDepth, Color ambientLight, Scene sourceScene) {
         this.width = width;
         this.height = height;
         this.camera = camera;
         this.maxDepth = maxDepth;
         this.ambientLight = ambientLight;
+        this.sourceScene = sourceScene;
     }
+
 
     public static EditableScene fromScene(Scene scene) {
         EditableScene editable = new EditableScene(
@@ -42,7 +45,8 @@ public final class EditableScene {
                 scene.getHeight(),
                 scene.getCamera(),
                 scene.getMaxDepth(),
-                scene.getAmbientLight()
+                scene.getAmbientLight(),
+                scene
         );
 
 
@@ -80,6 +84,7 @@ public final class EditableScene {
         builder
                 .setSize(width, height)
                 .setCamera(camera)
+                .setOutputFilename(sourceScene != null ? sourceScene.getOutputFilename() : null)
                 .setAmbientLight(ambientLight)
                 .setMaxDepth(maxDepth);
 
@@ -99,7 +104,28 @@ public final class EditableScene {
 
         }
 
-        return builder.build();
+        Scene candidate = builder.build();
+
+        boolean missingLights = candidate.getLights().isEmpty() && candidate.getAmbientLight().r() == 0
+                && candidate.getAmbientLight().g() == 0 && candidate.getAmbientLight().b() == 0;
+        boolean missingShapes = candidate.getShapeCount() == 0;
+
+        boolean noLightEnergy = candidate.getLights().stream()
+                .allMatch(l -> l.getColor().r() == 0 && l.getColor().g() == 0 && l.getColor().b() == 0)
+                && candidate.getAmbientLight().r() == 0 && candidate.getAmbientLight().g() == 0
+                && candidate.getAmbientLight().b() == 0;
+
+        boolean allMaterialsBlack = candidate.getShapes().stream()
+                .map(IShape::getMaterial)
+                .filter(mat -> mat != null)
+                .allMatch(mat -> mat.getDiffuse().r() == 0 && mat.getDiffuse().g() == 0 && mat.getDiffuse().b() == 0
+                        && mat.getSpecular().r() == 0 && mat.getSpecular().g() == 0 && mat.getSpecular().b() == 0);
+
+        if (sourceScene != null && (missingLights || missingShapes || (noLightEnergy && allMaterialsBlack))) {
+            return sourceScene;
+        }
+
+        return candidate;
     }
 
     public int getMaxDepth() {

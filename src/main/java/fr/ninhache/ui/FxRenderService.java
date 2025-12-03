@@ -24,7 +24,6 @@ public final class FxRenderService {
 
         pool.submit(() -> {
             try {
-                // 👉 utilise ton API actuelle
                 RenderResult result = renderer.render(scene);
                 Platform.runLater(() -> onSuccess.accept(result));
             } catch (Throwable t) {

@@ -17,6 +17,10 @@ public final class EditableMaterial {
     }
 
     public static EditableMaterial from(Material mat) {
+        if (mat == null) {
+            return new EditableMaterial(new Color(0.2, 0.2, 0.2), new Color(0.2, 0.2, 0.2), 32.0, MaterialPreset.CUSTOM);
+        }
+
         // par défaut on considère que ça vient d’un custom
         return new EditableMaterial(
                 mat.getDiffuse(),
