@@ -5,6 +5,7 @@ import fr.ninhache.raytracer.geometry.IShape;
 import fr.ninhache.raytracer.geometry.shape.Sphere;
 import fr.ninhache.raytracer.lighting.ILight;
 import fr.ninhache.raytracer.math.Color;
+import fr.ninhache.raytracer.math.Epsilon;
 import fr.ninhache.raytracer.scene.Camera;
 import fr.ninhache.raytracer.scene.Scene;
 import fr.ninhache.raytracer.scene.SceneBuilder;
@@ -106,27 +107,40 @@ public final class EditableScene {
 
         Scene candidate = builder.build();
 
-        boolean missingLights = candidate.getLights().isEmpty() && candidate.getAmbientLight().r() == 0
-                && candidate.getAmbientLight().g() == 0 && candidate.getAmbientLight().b() == 0;
+        boolean missingLights = candidate.getLights().isEmpty() && isZero(candidate.getAmbientLight());
         boolean missingShapes = candidate.getShapeCount() == 0;
 
         boolean noLightEnergy = candidate.getLights().stream()
-                .allMatch(l -> l.getColor().r() == 0 && l.getColor().g() == 0 && l.getColor().b() == 0)
-                && candidate.getAmbientLight().r() == 0 && candidate.getAmbientLight().g() == 0
-                && candidate.getAmbientLight().b() == 0;
+                .allMatch(l -> isZero(l.getColor()))
+                && isZero(candidate.getAmbientLight());
 
         boolean allMaterialsBlack = candidate.getShapes().stream()
                 .map(IShape::getMaterial)
                 .filter(mat -> mat != null)
-                .allMatch(mat -> mat.getDiffuse().r() == 0 && mat.getDiffuse().g() == 0 && mat.getDiffuse().b() == 0
-                        && mat.getSpecular().r() == 0 && mat.getSpecular().g() == 0 && mat.getSpecular().b() == 0);
+                .allMatch(mat -> isZero(mat.getDiffuse()) && isZero(mat.getSpecular()));
 
-        if (sourceScene != null && (missingLights || missingShapes || (noLightEnergy && allMaterialsBlack))) {
-            return sourceScene;
+        if (missingShapes) {
+            throw new ParseException("La scène reconstruite ne contient aucun objet : impossible de rendre.");
+        }
+        if (missingLights) {
+            throw new ParseException("Aucune source lumineuse ou lumière ambiante définie : le rendu serait noir.");
+        }
+        if (allMaterialsBlack) {
+            throw new ParseException("Tous les matériaux sont noirs (diffuse et specular à 0). Ajoutez ou restaurez des matériaux.");
+        }
+        if (noLightEnergy) {
+            throw new ParseException("Toutes les lumières et la lumière ambiante sont nulles : le rendu serait noir.");
         }
 
         return candidate;
     }
+
+    private boolean isZero(Color color) {
+
+        return Math.abs(color.r()) < Epsilon.EPS && Math.abs(color.g()) < Epsilon.EPS && Math.abs(color.b()) < Epsilon.EPS;
+    }
+
+
 
     public int getMaxDepth() {
         return maxDepth;

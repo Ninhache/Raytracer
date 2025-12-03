@@ -42,7 +42,8 @@ public class SceneBuilder {
 
     private Color ambientLight = Color.BLACK;
     private Color totalLightIntensity = Color.BLACK;
-    private Material currentMaterial = new Material();
+    private Material currentMaterial = new Material(new Color(0.2, 0.2, 0.2), new Color(0.2, 0.2, 0.2), 32.0);
+
 
 
     private final List<ILight> lights = new ArrayList<>();
