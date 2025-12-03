@@ -54,8 +54,13 @@ public final class EditableSphere implements EditableShape {
 
     @Override
     public Sphere toShape() {
-        return new Sphere(new Point(cx, cy, cz), radius);
+        Sphere sphere = new Sphere(new Point(cx, cy, cz), radius);
+        if (material != null) {
+            sphere.setMaterial(material.toMaterial());
+        }
+        return sphere;
     }
+
 
     @Override
     public Node createEditorPane() {

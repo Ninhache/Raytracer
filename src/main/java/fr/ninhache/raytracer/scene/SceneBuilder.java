@@ -204,7 +204,18 @@ public class SceneBuilder {
      * @param shape la forme à ajouter
      */
     public SceneBuilder addShape(IShape shape) {
-        shape.setMaterial(currentMaterial.copy());
+
+        if (shape == null) {
+            return this;
+        }
+
+        Material material = shape.getMaterial();
+        if (material == null) {
+            shape.setMaterial(currentMaterial.copy());
+        } else {
+            shape.setMaterial(material.copy());
+        }
+
         shapes.add(shape);
         return this;
     }

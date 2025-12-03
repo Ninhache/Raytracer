@@ -72,7 +72,6 @@ public class SceneInspector extends TabPane {
 
     private VBox createObjectsPane() {
         shapeList.setPlaceholder(new Label("Aucun objet"));
-
         shapeList.setCellFactory(list -> new javafx.scene.control.ListCell<>() {
             @Override
             protected void updateItem(EditableShape item, boolean empty) {
@@ -144,6 +143,7 @@ public class SceneInspector extends TabPane {
         lblLights.setText("");
         shapeList.setItems(FXCollections.emptyObservableList());
         lightsList.setItems(FXCollections.emptyObservableList());
+        showEditor(null);
     }
 
 

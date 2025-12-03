@@ -12,6 +12,7 @@ import fr.ninhache.ui.model.EditableMaterial;
 import fr.ninhache.ui.model.EditableShape;
 import fr.ninhache.ui.model.EditableSphere;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,32 +40,7 @@ public final class EditableScene {
             if (s instanceof Sphere sphere) {
                 editable.shapes.add(EditableSphere.from(sphere));
             } else {
-                editable.shapes.add(new EditableShape() {
-                    @Override
-                    public String name() {
-                        return "Placeholder Shape";
-                    }
-
-                    @Override
-                    public EditableMaterial getMaterial() {
-                        return null;
-                    }
-
-                    @Override
-                    public void setMaterial(EditableMaterial mat) {
-
-                    }
-
-                    @Override
-                    public IShape toShape() {
-                        return null;
-                    }
-
-                    @Override
-                    public Node createEditorPane() {
-                        return null;
-                    }
-                });
+                editable.shapes.add(new UnsupportedEditableShape(s));
             }
         }
 
@@ -101,7 +77,11 @@ public final class EditableScene {
         }
 
         for (EditableShape es : shapes) {
-            builder.addShape(es.toShape());
+            IShape shape = es.toShape();
+            if (shape != null) {
+                builder.addShape(shape);
+            }
+
         }
 
         return builder.build();
@@ -109,5 +89,38 @@ public final class EditableScene {
 
     public int getMaxDepth() {
         return maxDepth;
+    }
+
+    private static final class UnsupportedEditableShape implements EditableShape {
+        private final IShape delegate;
+
+        private UnsupportedEditableShape(IShape delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public String name() {
+            return delegate.getClass().getSimpleName() + " (non éditable)";
+        }
+
+        @Override
+        public EditableMaterial getMaterial() {
+            return null;
+        }
+
+        @Override
+        public void setMaterial(EditableMaterial mat) {
+            // non editable
+        }
+
+        @Override
+        public IShape toShape() {
+            return null; // ignorée lors de la reconstruction
+        }
+
+        @Override
+        public Node createEditorPane() {
+            return new Label("Cette forme n'est pas encore supportée par l'éditeur.");
+        }
     }
 }
