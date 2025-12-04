@@ -43,7 +43,7 @@ public class SceneBuilder {
     private Color ambientLight = Color.BLACK;
     private Color totalLightIntensity = Color.BLACK;
     private Material currentMaterial = new Material(new Color(0.2, 0.2, 0.2), new Color(0.2, 0.2, 0.2), 32.0);
-
+    private boolean materialExplicitlySet = false;
 
 
     private final List<ILight> lights = new ArrayList<>();
@@ -113,9 +113,11 @@ public class SceneBuilder {
     public SceneBuilder setDiffuse(Color diffuse) throws ParseException {
         validateColorRange(diffuse, "diffuse");
         currentMaterial = new Material(diffuse, currentMaterial.getSpecular(), currentMaterial.getShininess());
+        materialExplicitlySet = true;
         validateMaterialConstraint();
         return this;
     }
+
 
     /**
      * Définit le matériau spéculaire pour les prochaines formes.
@@ -137,6 +139,7 @@ public class SceneBuilder {
         */
 
         currentMaterial = new Material(currentMaterial.getDiffuse(), currentMaterial.getSpecular(), shininess);
+        materialExplicitlySet = true;
         return this;
     }
 
@@ -154,6 +157,10 @@ public class SceneBuilder {
      * @throws ParseException si la contrainte est violée
      */
     private void validateMaterialConstraint() throws ParseException {
+        if (!materialExplicitlySet) {
+            return; // la matière par défaut sera ajustée dynamiquement en fonction de l'ambiant
+        }
+
         Color sum = ambientLight.add(currentMaterial.getDiffuse());
 
         if (sum.r() > 1.0 || sum.g() > 1.0 || sum.b() > 1.0) {
@@ -205,20 +212,42 @@ public class SceneBuilder {
      * @param shape la forme à ajouter
      */
     public SceneBuilder addShape(IShape shape) {
-
         if (shape == null) {
             return this;
         }
 
         Material material = shape.getMaterial();
         if (material == null) {
-            shape.setMaterial(currentMaterial.copy());
+            Material fallback = materialExplicitlySet ? currentMaterial : buildAutoMaterial();
+            shape.setMaterial(fallback.copy());
+        } else if (isBlack(material)) {
+            // Matériau absent ou valeur par défaut noire :
+            //  - si l'utilisateur a défini un matériau courant explicite, on l'applique
+            //  - sinon on applique un matériau auto pour éviter un rendu noir
+            Material fallback = materialExplicitlySet ? currentMaterial : buildAutoMaterial();
+            shape.setMaterial(fallback.copy());
         } else {
             shape.setMaterial(material.copy());
         }
 
         shapes.add(shape);
         return this;
+    }
+
+    private boolean isBlack(Material mat) {
+        return mat.getDiffuse().equals(Color.BLACK) && mat.getSpecular().equals(Color.BLACK);
+    }
+
+    private Material buildAutoMaterial() {
+        double maxR = Math.max(0.0, 1.0 - ambientLight.r());
+        double maxG = Math.max(0.0, 1.0 - ambientLight.g());
+        double maxB = Math.max(0.0, 1.0 - ambientLight.b());
+
+        double autoR = Math.min(0.2, maxR);
+        double autoG = Math.min(0.2, maxG);
+        double autoB = Math.min(0.2, maxB);
+
+        return new Material(new Color(autoR, autoG, autoB), currentMaterial.getSpecular(), currentMaterial.getShininess());
     }
 
     /**
