@@ -5,6 +5,7 @@ import fr.ninhache.raytracer.scene.Camera;
 import fr.ninhache.raytracer.scene.Scene;
 import fr.ninhache.ui.model.EditableShape;
 import fr.ninhache.ui.model.SceneDocument;
+import fr.ninhache.ui.model.light.EditableLight;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -25,10 +26,12 @@ public class SceneInspector extends TabPane {
     private final Label lblLights = new Label();
 
     private final ListView<EditableShape> shapeList = new ListView<>();
-    private final ListView<ILight> lightsList = new ListView<>();
+    private final ListView<EditableLight> lightsList = new ListView<>();
 
     private final BorderPane editorContainer = new BorderPane();
+    private final BorderPane lightEditorContainer = new BorderPane();
     private final ShapeEditorFactory editorFactory = new ShapeEditorFactory();
+    private final LightEditorFactory lightEditorFactory = new LightEditorFactory();
 
     public SceneInspector() {
         Tab sceneTab = new Tab("Scène", createSceneInfoPane());
@@ -92,7 +95,20 @@ public class SceneInspector extends TabPane {
 
     private VBox createLightsPane() {
         lightsList.setPlaceholder(new Label("Aucune lumière"));
-        VBox box = new VBox(lightsList);
+        lightsList.setCellFactory(list -> new javafx.scene.control.ListCell<>() {
+            @Override
+            protected void updateItem(EditableLight item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.name());
+            }
+        });
+
+        lightsList.getSelectionModel().selectedItemProperty().addListener((obs, old, light) -> showLightEditor(light));
+
+        lightEditorContainer.setPadding(new Insets(6));
+        lightEditorContainer.setCenter(new Label("Sélectionnez une lumière pour l'éditer"));
+
+        VBox box = new VBox(8, lightsList, lightEditorContainer);
         box.setPadding(new Insets(4));
         return box;
     }
@@ -120,14 +136,21 @@ public class SceneInspector extends TabPane {
         lblObjects.setText(Integer.toString(escene.getShapes().size()));
         lblLights.setText(Integer.toString(escene.getLights().size()));
 
-        shapeList.setItems(FXCollections.observableArrayList(escene.getShapes()));   // List<EditableShape>
-        lightsList.setItems(FXCollections.observableArrayList(escene.getLights()));  // List<ILight>
+        shapeList.setItems(FXCollections.observableArrayList(escene.getShapes()));
+        lightsList.setItems(FXCollections.observableArrayList(escene.getLights()));
 
         if (!shapeList.getItems().isEmpty()) {
             shapeList.getSelectionModel().selectFirst();
         } else {
             showEditor(null);
         }
+
+        if (!lightsList.getItems().isEmpty()) {
+            lightsList.getSelectionModel().selectFirst();
+        } else {
+            showLightEditor(null);
+        }
+
     }
 
     private void showEditor(EditableShape shape) {
@@ -144,11 +167,19 @@ public class SceneInspector extends TabPane {
         shapeList.setItems(FXCollections.emptyObservableList());
         lightsList.setItems(FXCollections.emptyObservableList());
         showEditor(null);
+        showLightEditor(null);
     }
 
 
     public void setEditableScene(EditableScene scene) {
         shapeList.setItems(FXCollections.observableArrayList(scene.getShapes()));
+        lightsList.setItems(FXCollections.observableArrayList(scene.getLights()));
     }
+
+    private void showLightEditor(EditableLight light) {
+        Node editor = lightEditorFactory.createEditor(light);
+        lightEditorContainer.setCenter(editor);
+    }
+
 
 }

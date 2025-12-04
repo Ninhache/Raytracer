@@ -11,6 +11,10 @@ import fr.ninhache.raytracer.scene.Scene;
 import fr.ninhache.raytracer.scene.SceneBuilder;
 import fr.ninhache.raytracer.scene.exception.ParseException;
 import fr.ninhache.ui.model.*;
+import fr.ninhache.ui.model.light.EditableDirectionalLight;
+import fr.ninhache.ui.model.light.EditableLight;
+import fr.ninhache.ui.model.light.EditablePointLight;
+import fr.ninhache.ui.model.light.EditableSpotLight;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
@@ -24,7 +28,7 @@ public final class EditableScene {
     private final Camera camera;
     private final Color ambientLight;
     private final List<EditableShape> shapes = new ArrayList<>();
-    private final List<ILight> lights = new ArrayList<>();
+    private final List<EditableLight> lights = new ArrayList<>();
     private final int maxDepth;
     private final Scene sourceScene;
 
@@ -65,8 +69,17 @@ public final class EditableScene {
             }
         }
 
-        // lights : pour l’instant on les garde telles quelles, on ne les édite pas encore
-        editable.lights.addAll(scene.getLights());
+        for (ILight light : scene.getLights()) {
+            if (light instanceof fr.ninhache.raytracer.lighting.PointLight pointLight) {
+                editable.lights.add(EditablePointLight.from(pointLight));
+            } else if (light instanceof fr.ninhache.raytracer.lighting.DirectionalLight dirLight) {
+                editable.lights.add(EditableDirectionalLight.from(dirLight));
+            } else if (light instanceof fr.ninhache.raytracer.lighting.SpotLight spotLight) {
+                editable.lights.add(EditableSpotLight.from(spotLight));
+            } else {
+                editable.lights.add(new UnsupportedEditableLight(light));
+            }
+        }
 
         return editable;
     }
@@ -75,7 +88,7 @@ public final class EditableScene {
         return shapes;
     }
 
-    public List<ILight> getLights() {
+    public List<EditableLight> getLights() {
         return lights;
     }
 
@@ -95,12 +108,11 @@ public final class EditableScene {
                 .setAmbientLight(ambientLight)
                 .setMaxDepth(maxDepth);
 
-
-        // System.out.println("Matériau shape: diffuse=" + mat.getDiffuse() + ", specular=" + mat.getSpecular() + ", shininess=" + mat.getShininess());
-
-
-        for (ILight light : lights) {
-            builder.addLight(light);
+        for (EditableLight light : lights) {
+            ILight built = light.toLight();
+            if (built != null) {
+                builder.addLight(built);
+            }
         }
 
         for (EditableShape es : shapes) {
@@ -151,6 +163,30 @@ public final class EditableScene {
     public int getMaxDepth() {
         return maxDepth;
     }
+
+    private static final class UnsupportedEditableLight implements EditableLight {
+        private final ILight delegate;
+
+        private UnsupportedEditableLight(ILight delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public String name() {
+            return delegate.getClass().getSimpleName() + " (non éditable)";
+        }
+
+        @Override
+        public ILight toLight() {
+            return delegate;
+        }
+
+        @Override
+        public Node createEditorPane() {
+            return new Label("Cette lumière n'est pas encore éditable.");
+        }
+    }
+
 
     private static final class UnsupportedEditableShape implements EditableShape {
         private final IShape delegate;

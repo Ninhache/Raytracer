@@ -2,7 +2,10 @@ package fr.ninhache.raytracer.scene;
 
 
 import fr.ninhache.raytracer.geometry.IShape;
+import fr.ninhache.raytracer.lighting.DirectionalLight;
 import fr.ninhache.raytracer.lighting.ILight;
+import fr.ninhache.raytracer.lighting.PointLight;
+import fr.ninhache.raytracer.lighting.SpotLight;
 import fr.ninhache.raytracer.scene.exception.ParseException;
 import fr.ninhache.raytracer.math.Color;
 import fr.ninhache.raytracer.math.Point;
@@ -183,25 +186,62 @@ public class SceneBuilder {
      * @param light la source lumineuse
      * @throws ParseException si la somme des intensités dépasse 1.0
      */
-    public SceneBuilder addLight(ILight light) throws ParseException {
-        Color newTotal = totalLightIntensity.add(light.getColor());
+    public SceneBuilder addLight(ILight light) {
+        Color allowed = new Color(
+                Math.max(0.0, 1.0 - totalLightIntensity.r()),
+                Math.max(0.0, 1.0 - totalLightIntensity.g()),
+                Math.max(0.0, 1.0 - totalLightIntensity.b())
+        );
 
-        if (newTotal.r() > 1.0 || newTotal.g() > 1.0 || newTotal.b() > 1.0) {
-            throw new ParseException(
-                    String.format(
-                            "La somme des intensités lumineuses dépasse 1.0 :\n" +
-                                    "  total actuel = %s\n" +
-                                    "  nouvelle lumière = %s\n" +
-                                    "  nouveau total = (%.2f, %.2f, %.2f)",
-                            totalLightIntensity, light.getColor(),
-                            newTotal.r(), newTotal.g(), newTotal.b()
-                    )
+        Color clamped = new Color(
+                Math.min(light.getColor().r(), allowed.r()),
+                Math.min(light.getColor().g(), allowed.g()),
+                Math.min(light.getColor().b(), allowed.b())
+        );
+
+        if (!clamped.equals(light.getColor())) {
+            light = withColor(light, clamped);
+        }
+
+        totalLightIntensity = totalLightIntensity.add(light.getColor());
+        lights.add(light);
+        return this;
+    }
+
+    private ILight withColor(ILight light, Color color) {
+        if (light instanceof DirectionalLight directional) {
+            return new DirectionalLight(directional.getDirection(), color);
+        }
+        if (light instanceof PointLight point) {
+            return new PointLight(point.getPosition(), color);
+        }
+        if (light instanceof SpotLight spot) {
+            return new SpotLight(
+                    spot.getPosition(),
+                    spot.getDirection(),
+                    spot.getConeAngleDegrees(),
+                    spot.getPenumbraAngleDegrees(),
+                    color
             );
         }
 
-        totalLightIntensity = newTotal;
-        lights.add(light);
-        return this;
+        // Fallback : conserve le comportement d'éclairage mais avec la couleur limitée
+        return new ILight() {
+            @Override
+            public Color getColor() {
+                return color;
+            }
+
+            @Override
+            public fr.ninhache.raytracer.math.Vector incidentFrom(Point hitPoint) {
+                return light.incidentFrom(hitPoint);
+            }
+
+            @Override
+            public String describe() {
+                return light.describe();
+            }
+        };
     }
 
     /**
