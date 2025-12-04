@@ -15,14 +15,7 @@ public class ShapeEditorFactory {
             return new Label("Aucun objet sélectionné");
         }
 
-        if (shape instanceof EditableSphere sphere) {
-            SphereEditorPane pane = new SphereEditorPane();
-            pane.setShape(sphere);
-            return pane;
-        }
-
-        Label unsupported = new Label("Type d'objet non supporté pour l'édition");
-        unsupported.setWrapText(true);
-        return unsupported;
+        Node editor = shape.createEditorPane();
+        return editor != null ? editor : new Label("Type d'objet non supporté pour l'édition");
     }
 }

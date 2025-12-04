@@ -2,7 +2,7 @@ package fr.ninhache.ui;
 
 import fr.ninhache.raytracer.geometry.IShape;
 
-import fr.ninhache.raytracer.geometry.shape.Sphere;
+import fr.ninhache.raytracer.geometry.shape.*;
 import fr.ninhache.raytracer.lighting.ILight;
 import fr.ninhache.raytracer.math.Color;
 import fr.ninhache.raytracer.math.Epsilon;
@@ -10,9 +10,7 @@ import fr.ninhache.raytracer.scene.Camera;
 import fr.ninhache.raytracer.scene.Scene;
 import fr.ninhache.raytracer.scene.SceneBuilder;
 import fr.ninhache.raytracer.scene.exception.ParseException;
-import fr.ninhache.ui.model.EditableMaterial;
-import fr.ninhache.ui.model.EditableShape;
-import fr.ninhache.ui.model.EditableSphere;
+import fr.ninhache.ui.model.*;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
@@ -50,10 +48,18 @@ public final class EditableScene {
                 scene
         );
 
-
         for (IShape s : scene.getShapes()) {
+            // todo: trouver une meilleure manière de faire ça, le if me donne la gerbe
             if (s instanceof Sphere sphere) {
                 editable.shapes.add(EditableSphere.from(sphere));
+            } else if (s instanceof Plane plane) {
+                editable.shapes.add(EditablePlane.from(plane));
+            } else if (s instanceof Triangle triangle) {
+                editable.shapes.add(EditableTriangle.from(triangle));
+            } else if (s instanceof Disk disk) {
+                editable.shapes.add(EditableDisk.from(disk));
+            } else if (s instanceof RegularPolygon polygon) {
+                editable.shapes.add(EditableRegularPolygon.from(polygon));
             } else {
                 editable.shapes.add(new UnsupportedEditableShape(s));
             }
