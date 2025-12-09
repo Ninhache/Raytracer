@@ -100,7 +100,11 @@ public class MainView extends BorderPane {
             SceneDocument doc = new SceneDocument(file.getAbsolutePath(), displayName, scene);
 
             SceneTab tab = new SceneTab(doc, renderService);
-            tabPane.getTabs().add(tab);
+            int insertionIndex = tabPane.getTabs().contains(newTab)
+                    ? tabPane.getTabs().size() - 1
+                    : tabPane.getTabs().size();
+
+            tabPane.getTabs().add(insertionIndex, tab);
             tabPane.getSelectionModel().select(tab);
 
         } catch (Exception e) {
