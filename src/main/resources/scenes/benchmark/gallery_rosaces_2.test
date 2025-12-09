@@ -1,0 +1,26 @@
+size 1024 768
+output gallery_rosaces.png
+
+# Caméra centrée, légèrement en hauteur
+camera 0 1.5 9   0 1 0   0 1 0   45
+
+# Lumière ambiante
+ambient 0.1 0.1 0.1
+
+# Éclairage global (somme ≈ 1.0)
+directional -1 -1 -1   0.35 0.35 0.35
+point 3 3 2            0.35 0.35 0.35
+point -3 2 -3          0.30 0.30 0.30
+
+# Profondeur maximale de réflexion
+maxdepth 6
+
+
+
+# Rosace droite
+diffuse 0.2 0.6 0.35
+specular 0.6 0.7 0.6
+shininess 100
+regpoly 2.0 1.4 -5.9   0.8  10   0 0 1
+
+
