@@ -25,10 +25,10 @@ class RayIntersectionTest {
         assertTrue(hit.isPresent(), "L'intersection devrait exister");
 
         // Les points d'intersection sont à z=-4 et z=-6, donc t_near=4
-        assertAlmost(hit.get().t, 4.0);
-        assertAlmost(hit.get().point.z, -4.0);
+        assertAlmost(hit.get().t(), 4.0);
+        assertAlmost(hit.get().point().z, -4.0);
 
         // Normale sortante au point le plus proche : (0,0,1)
-        assertAlmost(hit.get().normal.z, 1.0);
+        assertAlmost(hit.get().normal().z, 1.0);
     }
 }

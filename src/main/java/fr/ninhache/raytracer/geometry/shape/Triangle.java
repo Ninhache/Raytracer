@@ -149,8 +149,8 @@ public final class Triangle extends AbstractShape {
      */
     @Override
     public Optional<Intersection> intersect(Ray ray) {
-        Vector dir = ray.getDirection();
-        Point origin = ray.getOrigin();
+        Vector dir = ray.direction();
+        Point origin = ray.origin();
 
         // Vecteur perpendiculaire à dir et edge2
         Vector pvec = dir.cross(edge2);

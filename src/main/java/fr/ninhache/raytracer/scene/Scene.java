@@ -3,6 +3,9 @@ package fr.ninhache.raytracer.scene;
 import fr.ninhache.raytracer.geometry.IShape;
 import fr.ninhache.raytracer.geometry.Intersection;
 import fr.ninhache.raytracer.geometry.Ray;
+import fr.ninhache.raytracer.geometry.bvh.BoundingBox;
+import fr.ninhache.raytracer.geometry.bvh.BoundingVolumes;
+import fr.ninhache.raytracer.geometry.bvh.BvhNode;
 import fr.ninhache.raytracer.lighting.ILight;
 import fr.ninhache.raytracer.math.Color;
 import java.util.ArrayList;
@@ -46,6 +49,8 @@ public final class Scene {
     private final List<ILight> lights;
     private final List<IShape> shapes;
     private final int maxDepth;
+    private final BvhNode bvhRoot;
+    private final List<IShape> unboundedShapes;
 
     /**
      * Construit une scène (utilisez {@link SceneBuilder}).
@@ -68,6 +73,20 @@ public final class Scene {
         this.lights = Collections.unmodifiableList(new ArrayList<>(lights));
         this.shapes = Collections.unmodifiableList(new ArrayList<>(shapes));
         this.maxDepth = maxDepth;
+
+        List<BvhNode.ShapeBounds> bounded = new ArrayList<>();
+        List<IShape> unbounded = new ArrayList<>();
+        for (IShape shape : shapes) {
+            BoundingBox box = BoundingVolumes.forShape(shape);
+            if (box == null || box.isInfinite()) {
+                unbounded.add(shape);
+            } else {
+                bounded.add(new BvhNode.ShapeBounds(shape, box));
+            }
+        }
+        this.bvhRoot = BvhNode.build(bounded);
+        this.unboundedShapes = Collections.unmodifiableList(unbounded);
+
     }
 
     /**
@@ -133,6 +152,13 @@ public final class Scene {
         return lights.size();
     }
 
+    /**
+     * @return true si un BVH a été construit pour les formes bornées.
+     */
+    public boolean hasBvh() {
+        return bvhRoot != null;
+    }
+
     @Override
     public String toString() {
         return String.format("Scene[%dx%d, %d shapes, %d lights, output=%s]",
@@ -149,14 +175,29 @@ public final class Scene {
         Intersection bestHit = null;
         double bestT = Double.POSITIVE_INFINITY;
 
-        for (IShape shape : shapes) {
-            Optional<Intersection> hit = shape.intersect(ray);
+        if (bvhRoot != null) {
+            Optional<Intersection> hit = bvhRoot.intersect(ray, bestT);
             if (hit.isPresent()) {
-                double t = hit.get().t;
-
-                if (t > EPS && t < bestT) {
-                    bestT = t;
+                bestHit = hit.get();
+                bestT = bestHit.t();
+            }
+        } else {
+            // Fallback linear pass when no BVH can be built
+            for (IShape shape : shapes) {
+                Optional<Intersection> hit = shape.intersect(ray);
+                if (hit.isPresent() && hit.get().t() > EPS && hit.get().t() < bestT) {
                     bestHit = hit.get();
+                    bestT = bestHit.t();
+                }
+            }
+        }
+
+        if (bvhRoot != null) {
+            for (IShape shape : unboundedShapes) {
+                Optional<Intersection> hit = shape.intersect(ray);
+                if (hit.isPresent() && hit.get().t() > EPS && hit.get().t() < bestT) {
+                    bestHit = hit.get();
+                    bestT = bestHit.t();
                 }
             }
         }

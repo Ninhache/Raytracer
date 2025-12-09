@@ -2,7 +2,10 @@ package fr.ninhache.raytracer.scene;
 
 
 import fr.ninhache.raytracer.geometry.IShape;
+import fr.ninhache.raytracer.lighting.DirectionalLight;
 import fr.ninhache.raytracer.lighting.ILight;
+import fr.ninhache.raytracer.lighting.PointLight;
+import fr.ninhache.raytracer.lighting.SpotLight;
 import fr.ninhache.raytracer.scene.exception.ParseException;
 import fr.ninhache.raytracer.math.Color;
 import fr.ninhache.raytracer.math.Point;
@@ -42,7 +45,8 @@ public class SceneBuilder {
 
     private Color ambientLight = Color.BLACK;
     private Color totalLightIntensity = Color.BLACK;
-    private Material currentMaterial = new Material();
+    private Material currentMaterial = new Material(new Color(0.2, 0.2, 0.2), new Color(0.2, 0.2, 0.2), 32.0);
+    private boolean materialExplicitlySet = false;
 
 
     private final List<ILight> lights = new ArrayList<>();
@@ -111,10 +115,12 @@ public class SceneBuilder {
      */
     public SceneBuilder setDiffuse(Color diffuse) throws ParseException {
         validateColorRange(diffuse, "diffuse");
-        currentMaterial = new Material(diffuse, currentMaterial.getSpecular(), currentMaterial.getShininess());
+        currentMaterial = new Material(diffuse, currentMaterial.specular(), currentMaterial.shininess());
+        materialExplicitlySet = true;
         validateMaterialConstraint();
         return this;
     }
+
 
     /**
      * Définit le matériau spéculaire pour les prochaines formes.
@@ -124,18 +130,13 @@ public class SceneBuilder {
      */
     public SceneBuilder setSpecular(Color specular) throws ParseException {
         validateColorRange(specular, "specular");
-        currentMaterial = new Material(currentMaterial.getDiffuse(), specular, currentMaterial.getShininess());
+        currentMaterial = new Material(currentMaterial.diffuse(), specular, currentMaterial.shininess());
         return this;
     }
 
-    public SceneBuilder setShininess(double shininess) throws ParseException {
-        /*
-        if (shininess < 0 || shininess > 100) {
-            throw new ParseException("shininess doit être compris entre 0 et 100");
-        }
-        */
-
-        currentMaterial = new Material(currentMaterial.getDiffuse(), currentMaterial.getSpecular(), shininess);
+    public SceneBuilder setShininess(double shininess) {
+        currentMaterial = new Material(currentMaterial.diffuse(), currentMaterial.specular(), shininess);
+        materialExplicitlySet = true;
         return this;
     }
 
@@ -153,16 +154,21 @@ public class SceneBuilder {
      * @throws ParseException si la contrainte est violée
      */
     private void validateMaterialConstraint() throws ParseException {
-        Color sum = ambientLight.add(currentMaterial.getDiffuse());
+        if (!materialExplicitlySet) {
+            return; // la matière par défaut sera ajustée dynamiquement en fonction de l'ambiant
+        }
+
+        Color sum = ambientLight.add(currentMaterial.diffuse());
 
         if (sum.r() > 1.0 || sum.g() > 1.0 || sum.b() > 1.0) {
             throw new ParseException(
                     String.format(
-                            "La somme ambient + diffuse dépasse 1.0 sur au moins une composante :\n" +
-                                    "  ambient = %s\n" +
-                                    "  diffuse = %s\n" +
-                                    "  somme   = (%.2f, %.2f, %.2f)",
-                            ambientLight, currentMaterial.getDiffuse(),
+                            """
+                                    La somme ambient + diffuse dépasse 1.0 sur au moins une composante :
+                                      ambient = %s
+                                      diffuse = %s
+                                      somme   = (%.2f, %.2f, %.2f)""",
+                            ambientLight, currentMaterial.diffuse(),
                             sum.r(), sum.g(), sum.b()
                     )
             );
@@ -173,27 +179,63 @@ public class SceneBuilder {
      * Ajoute une source lumineuse à la scène.
      *
      * @param light la source lumineuse
-     * @throws ParseException si la somme des intensités dépasse 1.0
      */
-    public SceneBuilder addLight(ILight light) throws ParseException {
-        Color newTotal = totalLightIntensity.add(light.getColor());
+    public SceneBuilder addLight(ILight light) {
+        Color allowed = new Color(
+                Math.max(0.0, 1.0 - totalLightIntensity.r()),
+                Math.max(0.0, 1.0 - totalLightIntensity.g()),
+                Math.max(0.0, 1.0 - totalLightIntensity.b())
+        );
 
-        if (newTotal.r() > 1.0 || newTotal.g() > 1.0 || newTotal.b() > 1.0) {
-            throw new ParseException(
-                    String.format(
-                            "La somme des intensités lumineuses dépasse 1.0 :\n" +
-                                    "  total actuel = %s\n" +
-                                    "  nouvelle lumière = %s\n" +
-                                    "  nouveau total = (%.2f, %.2f, %.2f)",
-                            totalLightIntensity, light.getColor(),
-                            newTotal.r(), newTotal.g(), newTotal.b()
-                    )
+        Color clamped = new Color(
+                Math.min(light.getColor().r(), allowed.r()),
+                Math.min(light.getColor().g(), allowed.g()),
+                Math.min(light.getColor().b(), allowed.b())
+        );
+
+        if (!clamped.equals(light.getColor())) {
+            light = withColor(light, clamped);
+        }
+
+        totalLightIntensity = totalLightIntensity.add(light.getColor());
+        lights.add(light);
+        return this;
+    }
+
+    private ILight withColor(ILight light, Color color) {
+        if (light instanceof DirectionalLight directional) {
+            return new DirectionalLight(directional.getDirection(), color);
+        }
+        if (light instanceof PointLight point) {
+            return new PointLight(point.getPosition(), color);
+        }
+        if (light instanceof SpotLight spot) {
+            return new SpotLight(
+                    spot.getPosition(),
+                    spot.getDirection(),
+                    spot.getConeAngleDegrees(),
+                    spot.getPenumbraAngleDegrees(),
+                    color
             );
         }
 
-        totalLightIntensity = newTotal;
-        lights.add(light);
-        return this;
+        // Fallback : conserve le comportement d'éclairage mais avec la couleur limitée
+        return new ILight() {
+            @Override
+            public Color getColor() {
+                return color;
+            }
+
+            @Override
+            public fr.ninhache.raytracer.math.Vector incidentFrom(Point hitPoint) {
+                return light.incidentFrom(hitPoint);
+            }
+
+            @Override
+            public String describe() {
+                return light.describe();
+            }
+        };
     }
 
     /**
@@ -204,9 +246,42 @@ public class SceneBuilder {
      * @param shape la forme à ajouter
      */
     public SceneBuilder addShape(IShape shape) {
-        shape.setMaterial(currentMaterial.copy());
+        if (shape == null) {
+            return this;
+        }
+
+        Material material = shape.getMaterial();
+        if (material == null) {
+            Material fallback = materialExplicitlySet ? currentMaterial : buildAutoMaterial();
+            shape.setMaterial(fallback.copy());
+        } else if (isBlack(material)) {
+            // Matériau absent ou valeur par défaut noire :
+            //  - si l'utilisateur a défini un matériau courant explicite, on l'applique
+            //  - sinon on applique un matériau auto pour éviter un rendu noir
+            Material fallback = materialExplicitlySet ? currentMaterial : buildAutoMaterial();
+            shape.setMaterial(fallback.copy());
+        } else {
+            shape.setMaterial(material.copy());
+        }
+
         shapes.add(shape);
         return this;
+    }
+
+    private boolean isBlack(Material mat) {
+        return mat.diffuse().equals(Color.BLACK) && mat.specular().equals(Color.BLACK);
+    }
+
+    private Material buildAutoMaterial() {
+        double maxR = Math.max(0.0, 1.0 - ambientLight.r());
+        double maxG = Math.max(0.0, 1.0 - ambientLight.g());
+        double maxB = Math.max(0.0, 1.0 - ambientLight.b());
+
+        double autoR = Math.min(0.2, maxR);
+        double autoG = Math.min(0.2, maxG);
+        double autoB = Math.min(0.2, maxB);
+
+        return new Material(new Color(autoR, autoG, autoB), currentMaterial.specular(), currentMaterial.shininess());
     }
 
     /**

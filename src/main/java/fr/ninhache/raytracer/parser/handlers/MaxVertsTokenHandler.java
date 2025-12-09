@@ -3,7 +3,6 @@ package fr.ninhache.raytracer.parser.handlers;
 import fr.ninhache.raytracer.parser.ParsingContext;
 import fr.ninhache.raytracer.parser.TokenHandler;
 import fr.ninhache.raytracer.parser.TokenProcessor;
-import fr.ninhache.raytracer.scene.SceneBuilder;
 import fr.ninhache.raytracer.scene.exception.ParseException;
 
 @TokenHandler("maxverts")

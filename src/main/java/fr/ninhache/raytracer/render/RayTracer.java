@@ -71,21 +71,21 @@ public final class RayTracer {
         }
 
         Intersection hit = ohit.get();
-        var mat = hit.shape.getMaterial();
+        var mat = hit.shape().getMaterial();
         Camera cam = scene.getCamera();
 
         // Vecteur vue (du point vers la caméra)
-        Vector V = cam.getLookFrom().sub(hit.point).normalized();
+        Vector V = cam.getLookFrom().sub(hit.point()).normalized();
 
         Color amb = scene.getAmbientLight();
-        Color kd  = mat.getDiffuse();
-        Color ks  = mat.getSpecular();
-        double shininess = mat.getShininess();
+        Color kd  = mat.diffuse();
+        Color ks  = mat.specular();
+        double shininess = mat.shininess();
 
         Color color = amb.schur(kd);
 
         // Origine légèrement décalée pour éviter les "auto-intersections"
-        Point shadowOrigin = hit.point.add(hit.normal.mul(EPS));
+        Point shadowOrigin = hit.point().add(hit.normal().mul(EPS));
 
         for (ILight light : scene.getLights()) {
             Vector L = light.incidentFrom(shadowOrigin);
@@ -103,14 +103,14 @@ public final class RayTracer {
             Ray shadowRay = new Ray(shadowOrigin, L);
             Optional<Intersection> occ = scene.findClosestIntersection(shadowRay);
             if (occ.isPresent()) {
-                double t = occ.get().t;
+                double t = occ.get().t();
                 if (t > EPS && t < maxT - EPS) {
                     // Un objet bloque la lumière
                     continue;
                 }
             }
 
-            double ndotl = hit.normal.dot(L);
+            double ndotl = hit.normal().dot(L);
             if (ndotl <= 0.0) {
                 continue;
             }
@@ -122,7 +122,7 @@ public final class RayTracer {
 
             if (shininess > 0.0 && (ks.r() > 0 || ks.g() > 0 || ks.b() > 0)) {
                 Vector H = L.add(V).normalized();
-                double ndoth = Math.max(0.0, hit.normal.dot(H));
+                double ndoth = Math.max(0.0, hit.normal().dot(H));
                 if (ndoth > 0.0) {
                     double specPow = Math.pow(ndoth, shininess);
                     Color spec = ks.schur(lc).mul(specPow);
@@ -139,8 +139,8 @@ public final class RayTracer {
                 stats.incReflection();
             }
 
-            Vector reflDir = ray.getDirection().reflect(hit.normal).normalized();
-            Point reflOrigin = hit.point.add(hit.normal.mul(EPS));
+            Vector reflDir = ray.direction().reflect(hit.normal()).normalized();
+            Point reflOrigin = hit.point().add(hit.normal().mul(EPS));
             Ray reflRay = new Ray(reflOrigin, reflDir);
 
             Color reflected = traceRay(scene, reflRay, depth + 1, stats);

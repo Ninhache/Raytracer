@@ -122,17 +122,31 @@ public final class RegularPolygon extends AbstractShape {
         for (Triangle tri : triangles) {
             Optional<Intersection> hit = tri.intersect(ray);
             if (hit.isPresent()) {
-                double t = hit.get().t;
+                double t = hit.get().t();
                 if (t > Epsilon.EPS && t < bestT) {
                     bestT = t;
                     Intersection h = hit.get();
 
                     // On remplace la forme par ce RegularPolygon pour l'étape de shading
-                    bestHit = new Intersection(t, h.point, h.normal, this);
+                    bestHit = new Intersection(t, h.point(), h.normal(), this);
                 }
             }
         }
 
         return Optional.ofNullable(bestHit);
     }
+
+
+    public Point getCenter() {
+        return center;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public Vector getNormal() {
+        return normal;
+    }
+
 }

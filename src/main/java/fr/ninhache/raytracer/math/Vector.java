@@ -47,9 +47,9 @@ package fr.ninhache.raytracer.math;
  * @see Point
  */
 public final class Vector extends AbstractVec3 {
-    public static Vector X_AXIS = new Vector(1, 0, 0);
-    public static Vector Y_AXIS = new Vector(0, 1, 0);
-    public static Vector Z_AXIS = new Vector(0, 0, 1);
+    public static final Vector X_AXIS = new Vector(1, 0, 0);
+    public static final Vector Y_AXIS = new Vector(0, 1, 0);
+    public static final Vector Z_AXIS = new Vector(0, 0, 1);
 
     /**
      * Crée un vecteur avec les composantes spécifiées.

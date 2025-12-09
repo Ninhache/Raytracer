@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Renderer de scène vers une image 2D.
- *
+ * <p>
  * - renderSingleThread : rendu séquentiel (simple, sûr)
  * - renderMultiThread  : rendu parallèle par lignes
  */

@@ -33,9 +33,9 @@ public class ParsingContext {
 
     // État contextuel (modifié par les tokens de matériaux)
     private int currentShininess;
-    private Color currentAmbient;
+    private final Color currentAmbient;
     private Color currentDiffuse;
-    private Color currentSpecular;
+    private final Color currentSpecular;
 
     // Gestion des vertices (pour les triangles)
     private int maxVertices;
@@ -66,11 +66,11 @@ public class ParsingContext {
         this.sceneBuilder.setCamera(camera);
     }
 
-    public void addLight(ILight light) throws ParseException {
+    public void addLight(ILight light) {
         this.sceneBuilder.addLight(light);
     }
 
-    public void addShape(IShape shape) throws ParseException {
+    public void addShape(IShape shape) {
         this.sceneBuilder.addShape(shape);
     }
 

@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * Buffer d'image simple basé sur un tableau d'entiers ARGB.
- *
+ * <p>
  * Thread-safe tant que chaque thread écrit dans des pixels distincts.
  */
 public final class ImageBuffer {

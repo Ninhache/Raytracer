@@ -13,28 +13,21 @@ import fr.ninhache.raytracer.math.Vector;
  *   <li>normal : normale de la surface au point d'impact (unitaire)</li>
  *   <li>shape : forme intersectée</li>
  * </ul>
+ *
+ * @param t      Paramètre t tel que P = origin + t * direction.
+ * @param point  Point d'intersection dans l'espace.
+ * @param normal Normale de surface au point d'intersection (vecteur unitaire).
+ * @param shape  Forme géométrique intersectée.
  */
-public final class Intersection {
-
-    /** Paramètre t tel que P = origin + t * direction. */
-    public final double t;
-
-    /** Point d'intersection dans l'espace. */
-    public final Point point;
-
-    /** Normale de surface au point d'intersection (vecteur unitaire). */
-    public final Vector normal;
-
-    /** Forme géométrique intersectée. */
-    public final IShape shape;
+public record Intersection(double t, Point point, Vector normal, IShape shape) {
 
     /**
      * Construit une intersection.
      *
-     * @param t paramètre le long du rayon (doit être > 0 pour un hit "devant" la caméra)
-     * @param point point d'intersection
+     * @param t      paramètre le long du rayon (doit être > 0 pour un hit "devant" la caméra)
+     * @param point  point d'intersection
      * @param normal normale de surface (sera normalisée)
-     * @param shape forme intersectée
+     * @param shape  forme intersectée
      */
     public Intersection(double t, Point point, Vector normal, IShape shape) {
         this.t = t;

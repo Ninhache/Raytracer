@@ -1,5 +1,7 @@
 package fr.ninhache;
 
+import fr.ninhache.raytracer.render.RenderResult;
+import fr.ninhache.raytracer.render.RenderStats;
 import fr.ninhache.raytracer.render.Renderer;
 import fr.ninhache.raytracer.scene.Scene;
 import fr.ninhache.raytracer.scene.SceneLoader;
@@ -52,35 +54,42 @@ public class Main {
     }
 
     public static void main(String[] args) {
-//        if (args.length == 0) {
-//            System.err.println("Usage: java -jar raytracer.jar <scene_file>");
-//            System.exit(1);
-//        }
+        if (args.length == 0) {
+            printUsage();
+            return;
+        }
 
         try {
-//            String sceneFile = args[0];
+            String sceneFile = args[0];
+
             // temporaire
-            String sceneFile = "/home/neo/imt/coo/tp3/demoreflexion.test";
+            // String sceneFile = "/home/neo/imt/coo/tp3/src/main/resources/scenes/final/final.scene";
 
             System.out.println("Chargement du fichier: " + sceneFile);
 
             SceneLoader loader = new SceneLoader();
             Scene scene = loader.load(sceneFile);
 
-             System.out.println("Résumé temporaire");
-             System.out.println("Dimensions: " + scene.getWidth() + "x" + scene.getHeight());
-             System.out.println("Sortie: " + scene.getOutputFilename());
-             System.out.println("Objets: " + scene.getShapeCount());
-             System.out.println("Lumières: " + scene.getLightCount());
+            System.out.println("Résumé temporaire");
+            System.out.println("Dimensions: " + scene.getWidth() + "x" + scene.getHeight());
+            System.out.println("Sortie: " + scene.getOutputFilename());
+            System.out.println("Objets: " + scene.getShapeCount());
+            System.out.println("Lumières: " + scene.getLightCount());
+            System.out.println("BVH: " + (scene.hasBvh() ? "activé" : "non construit (aucune forme bornée)"));
+
 
 
             Renderer renderer = new Renderer();
-            BufferedImage img = renderer.render(scene);
+            RenderResult renderResult = renderer.render(scene);
+
+            BufferedImage img = renderResult.image();
+            RenderStats stats = renderResult.stats();
+
             String out = scene.getOutputFilename();
             if (out == null || out.isEmpty()) out = "output.png";
             renderer.writeToFile(out, img);
             System.out.println("Image écrite : " + out);
-
+            System.out.println("Statistiques approximatives : " + stats);
 
         } catch (Exception e) {
             System.err.println("Erreur: " + e.getMessage());

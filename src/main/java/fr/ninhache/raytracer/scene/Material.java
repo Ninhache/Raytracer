@@ -13,17 +13,11 @@ import fr.ninhache.raytracer.math.Color;
  *       - une valeur élevée produit un petit point lumineux net (surface polie),
  *       une valeur faible produit un reflet large et doux (surface rugueuse)</li>
  * </ul>
+ * @param diffuse Contrôle la reflexion diffuse (Basé sur lambert)
+ * @param specular Contrôle la reflexion spéculaire
+ * @param shininess Contrôle la "dureté" du reflet (Basé sur Phong) [0.00 - 100.00]
  */
-public class Material {
-
-    private final Color diffuse;
-    private final Color specular;
-    private final double shininess; // Contrôle la "dureté" du reflet (Basé sur Phong) [0.00 - 100.00]
-    /*
-    private final double reflectivity; // Taux de réflexion (0 = mat, 1 = miroir)
-    private final double transparency; // 0 = opaque, 1 = totalement transparent
-    private final double refractiveIndex; // Indice de réfraction (verre ~1.5)
-     */
+public record Material(Color diffuse, Color specular, double shininess) {
 
     /**
      * Crée un matériau noir (par défaut).
@@ -35,37 +29,34 @@ public class Material {
     /**
      * Crée un matériau avec les propriétés spécifiées.
      *
-     * @param diffuse couleur diffuse
+     * @param diffuse  couleur diffuse
      * @param specular couleur spéculaire
      */
     public Material(Color diffuse, Color specular) {
         this(diffuse, specular, 32.0);
     }
 
-    public Material(Color diffuse, Color specular, double shininess) {
-        this.diffuse = diffuse;
-        this.specular = specular;
-        this.shininess = shininess;
-    }
-
     /**
      * @return la couleur diffuse
      */
-    public Color getDiffuse() {
+    @Override
+    public Color diffuse() {
         return diffuse;
     }
 
     /**
      * @return la couleur spéculaire
      */
-    public Color getSpecular() {
+    @Override
+    public Color specular() {
         return specular;
     }
 
     /**
      * @return la brillance
      */
-    public double getShininess() {
+    @Override
+    public double shininess() {
         return shininess;
     }
 

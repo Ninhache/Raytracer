@@ -2,18 +2,13 @@ package fr.ninhache.raytracer.scene;
 
 import fr.ninhache.raytracer.parser.FileFormatParser;
 import fr.ninhache.raytracer.parser.FormatParser;
-import fr.ninhache.raytracer.parser.TokenHandler;
 import fr.ninhache.raytracer.parser.TokenProcessorRegistry;
 import fr.ninhache.raytracer.scene.exception.ParseException;
 
 import java.io.*;
-import java.lang.reflect.AnnotatedType;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
@@ -128,7 +123,7 @@ public class SceneLoader {
 
     /**
      * Trouve le parser approprié en parcourant les méthodes naïve suivante, si un parser n'est pas clairement identifié, on passe à la méthode suivante
-     *
+     * <p>
      * Méthode naïve :
      * 1 - Par extension
      * 2 - Par bruteforce (Test tous les parsers)
@@ -157,7 +152,7 @@ public class SceneLoader {
     /**
      * Permet d'identifier l'extension d'un fichier par son nom de fichier
      *
-     * @param filename
+     * @param filename nom de fichier
      * @return son extension
      */
     private static String extractExt(String filename) {
@@ -169,11 +164,11 @@ public class SceneLoader {
     /**
      * "Normalise" une extension de fichier pour qu'elle renvoie toujours la même chose
      *
-     * @param ".json" ou "json"
+     * @param ext ".json" ou "json"
      * @return renvoie "json" en lower-case
      */
-    private static String normalizeExt(String raw) {
-        String s = raw.trim();
+    private static String normalizeExt(String ext) {
+        String s = ext.trim();
         if (s.startsWith(".")) {
             s = s.substring(1);
         }
