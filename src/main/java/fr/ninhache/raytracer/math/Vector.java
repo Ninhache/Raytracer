@@ -143,8 +143,8 @@ public final class Vector extends AbstractVec3 {
      * <ul>
      *   <li>Commutatif : a.dot(b) = b.dot(a)</li>
      *   <li>Si a · b = 0, les vecteurs sont <strong>orthogonaux</strong></li>
-     *   <li>Si a · b > 0, les vecteurs pointent dans des <strong>directions similaires</strong></li>
-     *   <li>Si a · b < 0, les vecteurs pointent dans des <strong>directions opposées</strong></li>
+     *   <li>Si a · b {@literal >} 0, les vecteurs pointent dans des <strong>directions similaires</strong></li>
+     *   <li>Si a · b {@literal <} 0, les vecteurs pointent dans des <strong>directions opposées</strong></li>
      * </ul>
      *
      * <p><strong>Utilisations en raytracing</strong> :
@@ -218,7 +218,7 @@ public final class Vector extends AbstractVec3 {
      *
      * <p>Un vecteur normalisé conserve la même direction mais a une longueur de 1.
      *
-     * <p><strong>Note</strong> : si ce vecteur est nul ou quasi-nul (longueur < 1e-14),
+     * <p><strong>Note</strong> : si ce vecteur est nul ou quasi-nul (longueur {@literal <} 1e-14),
      * retourne le vecteur nul (0, 0, 0).
      *
      * @return un nouveau vecteur de norme 1, ou le vecteur nul si la norme initiale est nulle

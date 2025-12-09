@@ -40,7 +40,7 @@ public final class Sphere extends AbstractShape {
      *
      * @param center le centre de la sphère
      * @param radius le rayon (doit être > 0)
-     * @throws IllegalArgumentException si le rayon est <= 0
+     * @throws IllegalArgumentException si le rayon est {@literal <=} 0
      */
     public Sphere(Point center, double radius) {
         super();

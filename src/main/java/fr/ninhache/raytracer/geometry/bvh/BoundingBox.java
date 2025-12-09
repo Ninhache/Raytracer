@@ -42,7 +42,7 @@ public final class BoundingBox {
      * Crée une "boîte" à partir de deux points opposés.
      *
      * <p>Cette méthode ne réordonne pas les composantes: l'appelant est responsable
-     * de fournir un point min et un point max cohérents (min.x <= max.x, etc.).
+     * de fournir un point min et un point max cohérents (min.x {@literal <=} max.x, etc.).
      *
      * @param min coin minimal de la boîte
      * @param max coin maximal de la boîte

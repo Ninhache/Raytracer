@@ -89,7 +89,7 @@ public abstract class AbstractVec3 {
      * Sinon, retourne un vecteur de norme 1 pointant dans la même direction
      *
      * <p><strong>Note :</strong> La détection du vecteur nul utilise une comparaison stricte avec 0.0
-     * Pour des vecteurs extrêmement petits (norme < 1e-150), le comportement peut être imprévisible en raison de la précision des flottants
+     * Pour des vecteurs extrêmement petits (norme {@literal } 1e-150), le comportement peut être imprévisible en raison de la précision des flottants
      *
      * @return un nouveau vecteur normalisé, ou le vecteur nul si la norme est nulle
      */
@@ -142,7 +142,7 @@ public abstract class AbstractVec3 {
      * ce qui la rend robuste aux valeurs très grandes ou très petites.
      *
      * <p>Deux composantes a et b sont considérées égales si :
-     * |a - b| <= epsilon × max(1, |a|, |b|)
+     * |a - b| {@literal <=} epsilon × max(1, |a|, |b|)
      *
      * <p>Les valeurs "NaN" sont toujours considérées comme différentes.
      *
@@ -225,10 +225,10 @@ public abstract class AbstractVec3 {
      *
      * <p>Plus précisément, cette méthode retourne {@code true} si :
      * <pre>{@code
-     *     |length() - 1.0| <= tolerance
+     *     |length() - 1.0| {@literal <=} tolerance
      * }</pre>
      *
-     * <h2>Utilisations typiques</h2>
+     * <p>Utilisations typiques</p>
      * <ul>
      *   <li>Vérifier qu'une direction de rayon est correctement normalisée</li>
      *   <li>Vérifier que des normales de surface ont bien une norme de 1</li>

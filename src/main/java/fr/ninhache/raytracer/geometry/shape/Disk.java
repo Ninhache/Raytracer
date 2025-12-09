@@ -19,7 +19,7 @@ import static fr.ninhache.raytracer.math.Epsilon.EPS;
  * <p>
  * Intersection :
  * 1) Intersecte le plan (centre, normale)
- * 2) On vérifie que le point d'impact est à distance <= rayon du centre.
+ * 2) On vérifie que le point d'impact est à distance {@literal <=} rayon du centre.
  */
 public final class Disk extends AbstractShape {
 
