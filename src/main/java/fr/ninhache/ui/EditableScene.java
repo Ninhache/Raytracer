@@ -6,6 +6,7 @@ import fr.ninhache.raytracer.geometry.shape.*;
 import fr.ninhache.raytracer.lighting.ILight;
 import fr.ninhache.raytracer.math.Color;
 import fr.ninhache.raytracer.math.Epsilon;
+import fr.ninhache.raytracer.render.RenderQuality;
 import fr.ninhache.raytracer.scene.Camera;
 import fr.ninhache.raytracer.scene.Scene;
 import fr.ninhache.raytracer.scene.SceneBuilder;
@@ -26,7 +27,7 @@ public final class EditableScene {
     private final int width;
     private final int height;
     private final Camera camera;
-    private final Color ambientLight;
+    private Color ambientLight;
     private final List<EditableShape> shapes = new ArrayList<>();
     private final List<EditableLight> lights = new ArrayList<>();
     private final int maxDepth;
@@ -69,6 +70,12 @@ public final class EditableScene {
             }
         }
 
+        editable.lights.add(new fr.ninhache.ui.model.light.EditableAmbientLight(
+                scene.getAmbientLight(),
+                editable::setAmbientLight
+        ));
+
+
         for (ILight light : scene.getLights()) {
             if (light instanceof fr.ninhache.raytracer.lighting.PointLight pointLight) {
                 editable.lights.add(EditablePointLight.from(pointLight));
@@ -100,13 +107,25 @@ public final class EditableScene {
      * Reconstruit une Scene à partir de l’état courant éditable.
      */
     public Scene toScene() throws ParseException {
+        return toScene(RenderQuality.NORMAL);
+    }
+
+    public Scene toScene(RenderQuality quality) throws ParseException {
+        int baseWidth = sourceScene != null ? sourceScene.getWidth() : width;
+        int baseHeight = sourceScene != null ? sourceScene.getHeight() : height;
+
+        int targetWidth = scaleDimension(baseWidth, quality);
+        int targetHeight = scaleDimension(baseHeight, quality);
+
+
         SceneBuilder builder = new SceneBuilder();
+
         builder
-                .setSize(width, height)
-                .setCamera(camera)
-                .setOutputFilename(sourceScene != null ? sourceScene.getOutputFilename() : null)
-                .setAmbientLight(ambientLight)
-                .setMaxDepth(maxDepth);
+            .setSize(targetWidth, targetHeight)
+            .setCamera(camera)
+            .setOutputFilename(sourceScene != null ? sourceScene.getOutputFilename() : null)
+            .setAmbientLight(ambientLight)
+            .setMaxDepth(maxDepth);
 
         for (EditableLight light : lights) {
             ILight built = light.toLight();
@@ -153,9 +172,23 @@ public final class EditableScene {
         return candidate;
     }
 
+    public void setAmbientLight(Color ambientLight) {
+        this.ambientLight = ambientLight;
+    }
+
+
     private boolean isZero(Color color) {
 
         return Math.abs(color.r()) < Epsilon.EPS && Math.abs(color.g()) < Epsilon.EPS && Math.abs(color.b()) < Epsilon.EPS;
+    }
+
+    private int scaleDimension(int value, RenderQuality quality) {
+        double factor = quality != null ? quality.scaleFactor() : 1.0;
+        int scaled = (int) Math.round(value * factor);
+        if (scaled <= 0) {
+            scaled = 1;
+        }
+        return scaled;
     }
 
 
@@ -164,60 +197,49 @@ public final class EditableScene {
         return maxDepth;
     }
 
-    private static final class UnsupportedEditableLight implements EditableLight {
-        private final ILight delegate;
-
-        private UnsupportedEditableLight(ILight delegate) {
-            this.delegate = delegate;
-        }
+    private record UnsupportedEditableLight(ILight delegate) implements EditableLight {
 
         @Override
-        public String name() {
-            return delegate.getClass().getSimpleName() + " (non éditable)";
+            public String name() {
+                return delegate.getClass().getSimpleName() + " (non éditable)";
+            }
+
+            @Override
+            public ILight toLight() {
+                return delegate;
+            }
+
+            @Override
+            public Node createEditorPane() {
+                return new Label("Cette lumière n'est pas encore éditable.");
+            }
         }
+
+    private record UnsupportedEditableShape(IShape delegate) implements EditableShape {
 
         @Override
-        public ILight toLight() {
-            return delegate;
+            public String name() {
+                return delegate.getClass().getSimpleName() + " (non éditable)";
+            }
+
+            @Override
+            public EditableMaterial getMaterial() {
+                return null;
+            }
+
+            @Override
+            public void setMaterial(EditableMaterial mat) {
+                // non editable
+            }
+
+            @Override
+            public IShape toShape() {
+                return delegate; // ignorée lors de la reconstruction
+            }
+
+            @Override
+            public Node createEditorPane() {
+                return new Label("Cette forme n'est pas encore supportée par l'éditeur.");
+            }
         }
-
-        @Override
-        public Node createEditorPane() {
-            return new Label("Cette lumière n'est pas encore éditable.");
-        }
-    }
-
-
-    private static final class UnsupportedEditableShape implements EditableShape {
-        private final IShape delegate;
-
-        private UnsupportedEditableShape(IShape delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public String name() {
-            return delegate.getClass().getSimpleName() + " (non éditable)";
-        }
-
-        @Override
-        public EditableMaterial getMaterial() {
-            return null;
-        }
-
-        @Override
-        public void setMaterial(EditableMaterial mat) {
-            // non editable
-        }
-
-        @Override
-        public IShape toShape() {
-            return delegate; // ignorée lors de la reconstruction
-        }
-
-        @Override
-        public Node createEditorPane() {
-            return new Label("Cette forme n'est pas encore supportée par l'éditeur.");
-        }
-    }
 }

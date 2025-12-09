@@ -3,7 +3,6 @@ package fr.ninhache.ui;
 import fr.ninhache.raytracer.render.RenderQuality;
 import fr.ninhache.raytracer.render.RenderResult;
 import fr.ninhache.raytracer.render.RenderStats;
-import fr.ninhache.ui.SceneInspector;
 import fr.ninhache.ui.model.SceneDocument;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -13,7 +12,9 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import javafx.beans.binding.BooleanBinding;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -102,33 +103,61 @@ public class SceneTab extends Tab {
     }
 
     private StackPane createPreviewPane() {
-        Label helper = new Label("Ouvrez une scène puis lancez un rendu pour voir l'aperçu.");
-        helper.setStyle("-fx-text-fill: derive(-fx-text-base-color, -40%)");
+        Label helperTitle = new Label("Aucun rendu pour le moment");
+        helperTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
 
+        Label helper = new Label("Mais.. La scène est prête. Cliquez sur \"Lancer le rendu\" pour générer un aperçu.");
+        helper.setWrapText(true);
+
+        Button button = new Button("Lancer le rendu");
+        button.setOnAction(e -> doRender());
+        button.setDefaultButton(true);
+
+        VBox helperCard = new VBox(6, helperTitle, helper, button);
+        helperCard.setAlignment(Pos.CENTER_LEFT);
+        helperCard.setPadding(new Insets(10));
+
+        StackPane.setAlignment(helperCard, Pos.BOTTOM_LEFT);
+        StackPane.setMargin(helperCard, new Insets(0, 0, 16, 16));
+
+        BooleanBinding hasRender = document.getLastRenderProperty().isNotNull();
+        helperCard.visibleProperty().bind(hasRender.not().and(rendering.not()));
+        helperCard.managedProperty().bind(helperCard.visibleProperty());
+
+        // Overlay de chargement
         ProgressIndicator indicator = new ProgressIndicator();
-        indicator.visibleProperty().bind(rendering);
-        indicator.managedProperty().bind(rendering);
+        Label loadingLabel = new Label("Rendu en cours…");
+        loadingLabel.setTextFill(Color.WHITE);
 
-        VBox overlay = new VBox(8, indicator, new Label("Rendu en cours..."));
-        overlay.setAlignment(Pos.CENTER);
-        overlay.visibleProperty().bind(rendering);
-        overlay.managedProperty().bind(rendering);
+        VBox loadingContent = new VBox(10, indicator, loadingLabel);
+        loadingContent.setAlignment(Pos.CENTER);
 
-        StackPane previewContainer = new StackPane(helper, previewView, overlay);
-        StackPane.setAlignment(helper, Pos.CENTER);
-        StackPane.setAlignment(previewView, Pos.CENTER);
+        StackPane loadingOverlay = new StackPane(loadingContent);
+        loadingOverlay.setStyle("-fx-background-color: rgba(0,0,0,0.45);");
+        loadingOverlay.visibleProperty().bind(rendering);
+        loadingOverlay.managedProperty().bind(rendering);
+
+        StackPane previewContainer = new StackPane(previewView, helperCard, loadingOverlay);
         previewContainer.setPadding(new Insets(10));
+
+        if (previewView instanceof ImageView imageView) {
+            imageView.setPreserveRatio(true);
+            imageView.setSmooth(true);
+            imageView.setCache(true);
+        }
+
         return previewContainer;
     }
 
 
 
     private void doRender() {
+
         statusLabel.setText("Rendu en cours...");
         rendering.set(true);
 
         try {
-            var sceneToRender = document.buildSceneForRender();
+            var sceneToRender = document.buildSceneForRender(qualityBox.getValue());
 
             renderService.renderAsync(
                     sceneToRender,

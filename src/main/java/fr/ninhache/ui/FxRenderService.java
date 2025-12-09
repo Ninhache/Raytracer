@@ -18,10 +18,7 @@ public final class FxRenderService {
     private final ExecutorService pool =
             Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-    public void renderAsync(Scene scene,
-                            Consumer<RenderResult> onSuccess,
-                            Consumer<Throwable> onError) {
-
+    public void renderAsync(Scene scene, Consumer<RenderResult> onSuccess, Consumer<Throwable> onError) {
         pool.submit(() -> {
             try {
                 RenderResult result = renderer.render(scene);
