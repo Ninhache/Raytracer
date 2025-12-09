@@ -11,6 +11,12 @@ This project is a raytracer written in Java with two entry points:
 
 You can build and run both versions using Maven and a Makefile.
 
+<p align="center">
+  <img src="resources/screenshots/scenes/dragon3.png" alt='Scene "dragon3"' style="width:49%; display:inline-block; margin:0;" />
+  <img src="resources/screenshots/scenes/final.png" alt='Scene "final"' style="width:49%; display:inline-block; margin:0;" />
+</p>
+
+
 ## 1. Requirements
 
 - Java 21 (JDK 21)
