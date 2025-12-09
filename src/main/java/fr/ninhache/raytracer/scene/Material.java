@@ -13,16 +13,11 @@ import fr.ninhache.raytracer.math.Color;
  *       - une valeur élevée produit un petit point lumineux net (surface polie),
  *       une valeur faible produit un reflet large et doux (surface rugueuse)</li>
  * </ul>
- *
+ * @param diffuse Contrôle la reflexion diffuse (Basé sur lambert)
+ * @param specular Contrôle la reflexion spéculaire
  * @param shininess Contrôle la "dureté" du reflet (Basé sur Phong) [0.00 - 100.00]
  */
 public record Material(Color diffuse, Color specular, double shininess) {
-
-    /*
-    private final double reflectivity; // Taux de réflexion (0 = mat, 1 = miroir)
-    private final double transparency; // 0 = opaque, 1 = totalement transparent
-    private final double refractiveIndex; // Indice de réfraction (verre ~1.5)
-     */
 
     /**
      * Crée un matériau noir (par défaut).
