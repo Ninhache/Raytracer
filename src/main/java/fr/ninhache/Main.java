@@ -54,26 +54,29 @@ public class Main {
     }
 
     public static void main(String[] args) {
-//        if (args.length == 0) {
-//            System.err.println("Usage: java -jar raytracer.jar <scene_file>");
-//            System.exit(1);
-//        }
+        if (args.length == 0) {
+            printUsage();
+            return;
+        }
 
         try {
-//            String sceneFile = args[0];
+            String sceneFile = args[0];
+
             // temporaire
-            String sceneFile = "/home/neo/imt/coo/tp3/src/main/resources/scenes/final/final.scene";
+            // String sceneFile = "/home/neo/imt/coo/tp3/src/main/resources/scenes/final/final.scene";
 
             System.out.println("Chargement du fichier: " + sceneFile);
 
             SceneLoader loader = new SceneLoader();
             Scene scene = loader.load(sceneFile);
 
-             System.out.println("Résumé temporaire");
-             System.out.println("Dimensions: " + scene.getWidth() + "x" + scene.getHeight());
-             System.out.println("Sortie: " + scene.getOutputFilename());
-             System.out.println("Objets: " + scene.getShapeCount());
-             System.out.println("Lumières: " + scene.getLightCount());
+            System.out.println("Résumé temporaire");
+            System.out.println("Dimensions: " + scene.getWidth() + "x" + scene.getHeight());
+            System.out.println("Sortie: " + scene.getOutputFilename());
+            System.out.println("Objets: " + scene.getShapeCount());
+            System.out.println("Lumières: " + scene.getLightCount());
+            System.out.println("BVH: " + (scene.hasBvh() ? "activé" : "non construit (aucune forme bornée)"));
+
 
 
             Renderer renderer = new Renderer();
