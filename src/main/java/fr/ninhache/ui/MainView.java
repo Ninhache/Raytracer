@@ -23,11 +23,11 @@ public class MainView extends BorderPane {
 
     private final FxRenderService renderService = new FxRenderService();
     private final TabPane tabPane = new TabPane();
-    private final VBox emptyState = createEmptyState();
 
     public MainView() {
         setPadding(new Insets(10));
 
+        VBox emptyState = createEmptyState();
         StackPane center = new StackPane(emptyState, tabPane);
         StackPane.setAlignment(emptyState, Pos.CENTER);
         emptyState.visibleProperty().bind(Bindings.isEmpty(tabPane.getTabs()));

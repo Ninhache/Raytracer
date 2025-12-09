@@ -135,12 +135,6 @@ public class SceneBuilder {
     }
 
     public SceneBuilder setShininess(double shininess) throws ParseException {
-        /*
-        if (shininess < 0 || shininess > 100) {
-            throw new ParseException("shininess doit être compris entre 0 et 100");
-        }
-        */
-
         currentMaterial = new Material(currentMaterial.diffuse(), currentMaterial.specular(), shininess);
         materialExplicitlySet = true;
         return this;

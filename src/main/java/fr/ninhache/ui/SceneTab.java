@@ -27,7 +27,6 @@ public class SceneTab extends Tab {
 
     private final ImageView previewView;
     private final Label statusLabel;
-    private final SceneInspector inspector;
     private ComboBox<RenderQuality> qualityBox;
     private final BooleanProperty rendering = new SimpleBooleanProperty(false);
 
@@ -52,7 +51,7 @@ public class SceneTab extends Tab {
         StackPane previewContainer = createPreviewPane();
 
         // Inspecteur à droite dans une SplitPane pour ajuster l’espace
-        inspector = new SceneInspector();
+        SceneInspector inspector = new SceneInspector();
         inspector.setDocument(document);
 
         javafx.scene.control.SplitPane splitPane = new javafx.scene.control.SplitPane(
