@@ -6,10 +6,7 @@ import fr.ninhache.ui.model.SceneDocument;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -22,17 +19,32 @@ public class MainView extends BorderPane {
 
     private final FxRenderService renderService = new FxRenderService();
     private final TabPane tabPane = new TabPane();
+    private final Tab newTab = new Tab("+");
 
     public MainView() {
         setPadding(new Insets(10));
 
+        newTab.setClosable(false);
+        newTab.setClosable(false);
+        newTab.setOnSelectionChanged(e -> {
+            if (newTab.isSelected() && tabPane.getTabs().size() > 1) {
+                openSceneDialog();
+            }
+        });
+        tabPane.getTabs().add(newTab);
+
         VBox emptyState = createEmptyState();
         StackPane center = new StackPane(emptyState, tabPane);
         StackPane.setAlignment(emptyState, Pos.CENTER);
-        emptyState.visibleProperty().bind(Bindings.isEmpty(tabPane.getTabs()));
+        emptyState.visibleProperty().bind(
+                Bindings.size(tabPane.getTabs()).lessThanOrEqualTo(1)
+        );
         emptyState.managedProperty().bind(emptyState.visibleProperty());
-        tabPane.visibleProperty().bind(Bindings.isNotEmpty(tabPane.getTabs()));
+        tabPane.visibleProperty().bind(
+                Bindings.size(tabPane.getTabs()).greaterThan(1)
+        );
         tabPane.managedProperty().bind(tabPane.visibleProperty());
+
         setCenter(center);
 
     }
