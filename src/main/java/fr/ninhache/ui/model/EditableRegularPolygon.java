@@ -34,11 +34,11 @@ public final class EditableRegularPolygon implements EditableShape {
     }
 
     public static EditableRegularPolygon from(RegularPolygon polygon) {
-        Point c = polygon.getTriangles().get(0).getV1();
-        Vector n = polygon.getTriangles().get(0).getNormal();
+        Point c = polygon.getTriangles().getFirst().getV1();
+        Vector n = polygon.getTriangles().getFirst().getNormal();
         // le centre est commun à tous les triangles (vertex v1)
         Material m = polygon.getMaterial();
-        return new EditableRegularPolygon(c.x, c.y, c.z, n.x, n.y, n.z, polygon.getTriangles().get(0).getEdge1().length(), polygon.getTriangles().size(), EditableMaterial.from(m));
+        return new EditableRegularPolygon(c.x, c.y, c.z, n.x, n.y, n.z, polygon.getTriangles().getFirst().getEdge1().length(), polygon.getTriangles().size(), EditableMaterial.from(m));
     }
 
     @Override

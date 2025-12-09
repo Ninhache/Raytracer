@@ -77,11 +77,11 @@ public final class BvhNode {
         }
 
         if (shapes.size() == 1) {
-            ShapeBounds sb = shapes.get(0);
+            ShapeBounds sb = shapes.getFirst();
             return new BvhNode(sb.bounds(), null, null, sb.shape());
         }
 
-        BoundingBox global = shapes.get(0).bounds();
+        BoundingBox global = shapes.getFirst().bounds();
         for (int i = 1; i < shapes.size(); i++) {
             global = global.union(shapes.get(i).bounds());
         }
@@ -108,7 +108,7 @@ public final class BvhNode {
 
         // garde contre les splits dégénérés
         if (leftShapes.isEmpty() || rightShapes.isEmpty()) {
-            ShapeBounds sb = sorted.get(0);
+            ShapeBounds sb = sorted.getFirst();
             return new BvhNode(sb.bounds(), null, null, sb.shape());
         }
 
