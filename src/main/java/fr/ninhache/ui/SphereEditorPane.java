@@ -1,8 +1,8 @@
 package fr.ninhache.ui;
 
 import fr.ninhache.raytracer.math.Color;
-import fr.ninhache.ui.model.EditableMaterial;
-import fr.ninhache.ui.model.EditableSphere;
+import fr.ninhache.ui.model.shape.EditableMaterial;
+import fr.ninhache.ui.model.shape.EditableSphere;
 import fr.ninhache.ui.model.MaterialPreset;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;

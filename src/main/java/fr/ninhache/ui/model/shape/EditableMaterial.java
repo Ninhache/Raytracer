@@ -1,7 +1,8 @@
-package fr.ninhache.ui.model;
+package fr.ninhache.ui.model.shape;
 
 import fr.ninhache.raytracer.math.Color;
 import fr.ninhache.raytracer.scene.Material;
+import fr.ninhache.ui.model.MaterialPreset;
 
 public final class EditableMaterial {
     private Color diffuse;

@@ -1,6 +1,6 @@
 package fr.ninhache.ui;
 
-import fr.ninhache.ui.model.EditableShape;
+import fr.ninhache.ui.model.shape.EditableShape;
 import javafx.scene.layout.VBox;
 
 /**

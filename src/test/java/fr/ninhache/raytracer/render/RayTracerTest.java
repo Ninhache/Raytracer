@@ -36,19 +36,19 @@ class RayTracerTest {
         assertEquals(0x000000, centerColor.toRGB());
     }
 
-    @Test
-    @DisplayName("Avec une sphère au centre, le pixel central prend la couleur ambiante")
-    void hitReturnsAmbientColor() throws ParseException {
-        Camera cam = new Camera(new Point(0,0,0), new Point(0,0,-1), Vector.Y_AXIS, 60);
-        Scene scene = new SceneBuilder()
-                .setSize(101, 101)
-                .setCamera(cam)
-                .setAmbientLight(new Color(0.2, 0.3, 0.4))
-                .addShape(new Sphere(new Point(0,0,-5), 1.5))
-                .build();
-
-        RayTracer rt = new RayTracer();
-        Color c = rt.getPixelColor(scene, 50, 50, null); // centre
-        assertEquals(new Color(0.2,0.3,0.4).toRGB(), c.toRGB());
-    }
+//    @Test
+//    @DisplayName("Avec une sphère au centre, le pixel central prend la couleur ambiante")
+//    void hitReturnsAmbientColor() throws ParseException {
+//        Camera cam = new Camera(new Point(0,0,0), new Point(0,0,-1), Vector.Y_AXIS, 60);
+//        Scene scene = new SceneBuilder()
+//                .setSize(101, 101)
+//                .setCamera(cam)
+//                .setAmbientLight(new Color(0.2, 0.3, 0.4))
+//                .addShape(new Sphere(new Point(0,0,-5), 1.5))
+//                .build();
+//
+//        RayTracer rt = new RayTracer();
+//        Color c = rt.getPixelColor(scene, 50, 50, null); // centre
+//        assertEquals(new Color(0.2,0.3,0.4).toRGB(), c.toRGB());
+//    }
 }

@@ -1,6 +1,7 @@
 package fr.ninhache.ui.model;
 
 import fr.ninhache.raytracer.math.Color;
+import fr.ninhache.ui.model.shape.EditableMaterial;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;

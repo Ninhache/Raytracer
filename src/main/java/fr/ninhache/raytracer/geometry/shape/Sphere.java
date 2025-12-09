@@ -107,7 +107,7 @@ public final class Sphere extends AbstractShape {
         double t = Double.POSITIVE_INFINITY;
         if (t1 > EPS) t = t1;
         if (t2 > EPS && t2 < t) t = t2;
-        if (!Double.isFinite(t) || t <= EPS) return Optional.empty();
+        if (!Double.isFinite(t)) return Optional.empty();
 
         // construire l'intersection
         var p = ray.at(t);

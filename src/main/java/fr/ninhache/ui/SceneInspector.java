@@ -1,6 +1,6 @@
 package fr.ninhache.ui;
 
-import fr.ninhache.ui.model.EditableShape;
+import fr.ninhache.ui.model.shape.EditableShape;
 import fr.ninhache.ui.model.SceneDocument;
 import fr.ninhache.ui.model.light.EditableLight;
 import javafx.collections.FXCollections;

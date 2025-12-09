@@ -1,8 +1,9 @@
-package fr.ninhache.ui.model;
+package fr.ninhache.ui.model.shape;
 
 import fr.ninhache.raytracer.geometry.shape.Sphere;
 import fr.ninhache.raytracer.math.Point;
 import fr.ninhache.raytracer.scene.Material;
+import fr.ninhache.ui.model.MaterialPreset;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.Node;

@@ -1,4 +1,4 @@
-package fr.ninhache.ui.model;
+package fr.ninhache.ui.model.shape;
 
 import fr.ninhache.raytracer.geometry.IShape;
 import javafx.scene.Node;

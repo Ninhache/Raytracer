@@ -11,11 +11,11 @@ import fr.ninhache.raytracer.scene.Camera;
 import fr.ninhache.raytracer.scene.Scene;
 import fr.ninhache.raytracer.scene.SceneBuilder;
 import fr.ninhache.raytracer.scene.exception.ParseException;
-import fr.ninhache.ui.model.*;
 import fr.ninhache.ui.model.light.EditableDirectionalLight;
 import fr.ninhache.ui.model.light.EditableLight;
 import fr.ninhache.ui.model.light.EditablePointLight;
 import fr.ninhache.ui.model.light.EditableSpotLight;
+import fr.ninhache.ui.model.shape.*;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
