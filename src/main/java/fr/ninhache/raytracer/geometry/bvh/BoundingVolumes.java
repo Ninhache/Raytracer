@@ -9,11 +9,47 @@ import fr.ninhache.raytracer.geometry.shape.Triangle;
 import fr.ninhache.raytracer.math.Point;
 
 /**
- * Utility methods to create axis-aligned bounding boxes for known shapes.
+ * Fournit des méthodes utilitaires pour créer des boîtes BVH alignées sur les axes (Axis-Aligned Bounding Boxes, AABB) pour des formes géométriques connues
+ *
+ * <p>Une boîte englobante alignée sur les axes est un volume rectangulaire minimal,
+ * aligné sur les axes du repère (X, Y, Z), qui contient entièrement une forme donnée.
+ * Ce type de volume est largement utilisé en rendu 3D et en détection de collisions:
+ * <ul>
+ *   <li><strong>Encapsulation rapide</strong>: permet d'approximer la forme avec un volume simple</li>
+ *   <li><strong>Tests d'intersection efficaces</strong>: les comparaisons se réduisent à des tests
+ *       de bornes sur chaque axe</li>
+ *   <li><strong>Optimisation</strong>: sert de brique de base pour les structures d'accélération
+ *       (BVH, octrees, grilles, etc.)</li>
+ * </ul>
+ *
+ * <p>Les méthodes fournies ici construisent automatiquement ces "boîtes" à partir de formes dont la géométrie est connue (sphère, triangle, disque, polygone régulier, etc.),
+ * évitant ainsi les calculs répétitifs (et accessoirement les erreurs de manipulation des coordonnées)
  */
 public final class BoundingVolumes {
+
+    /**
+     * Classe utilitaire: constructeur privé pour empêcher l'instanciation.
+     */
     private BoundingVolumes() {}
 
+    /**
+     * Calcule une "boîte" approximative pour une forme donnée.
+     *
+     * <p>Formes actuellement supportées:
+     * <ul>
+     *   <li>{@link Sphere}: "boîte" du rayon autour du centre</li>
+     *   <li>{@link Triangle}: "boîte" serrée à partir des trois sommets</li>
+     *   <li>{@link Disk}: "boîte" du disque vue comme une sphère aplatie</li>
+     *   <li>{@link RegularPolygon}: "boîte" du polygone à partir de son centre et de son rayon</li>
+     * </ul>
+     *
+     * <p>Pour les formes infinies comme {@link Plane}, ou toute forme dont les bornes
+     * ne peuvent pas être déterminées proprement, la méthode retourne une
+     * "boîte" infinie via {@link BoundingBox#infinite()}.
+     *
+     * @param shape forme dont on souhaite obtenir une "boîte", ne doit pas être null
+     * @return boîte alignée sur les axes qui contient la forme, ou une boîte infinie si la forme ne peut pas être bornée correctement
+     */
     public static BoundingBox forShape(IShape shape) {
         if (shape instanceof Sphere sphere) {
             Point c = sphere.getCenter();
@@ -47,11 +83,12 @@ public final class BoundingVolumes {
         }
 
         if (shape instanceof Plane) {
-            // On ne sait pas borner
+            // Forme infinie: pas de bornes finies
             // return BoundingBox.infinite();
         }
 
-        // Indique qu'on ne sait pas borner proprement
+        // Indique que l'on ne sait pas borner proprement la forme:
+        // on retourne une boîte infinie pour ne pas exclure à tort des intersections.
         return BoundingBox.infinite();
     }
 }
