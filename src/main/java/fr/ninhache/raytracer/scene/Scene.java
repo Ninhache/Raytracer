@@ -179,15 +179,15 @@ public final class Scene {
             Optional<Intersection> hit = bvhRoot.intersect(ray, bestT);
             if (hit.isPresent()) {
                 bestHit = hit.get();
-                bestT = bestHit.t;
+                bestT = bestHit.t();
             }
         } else {
             // Fallback linear pass when no BVH can be built
             for (IShape shape : shapes) {
                 Optional<Intersection> hit = shape.intersect(ray);
-                if (hit.isPresent() && hit.get().t > EPS && hit.get().t < bestT) {
+                if (hit.isPresent() && hit.get().t() > EPS && hit.get().t() < bestT) {
                     bestHit = hit.get();
-                    bestT = bestHit.t;
+                    bestT = bestHit.t();
                 }
             }
         }
@@ -195,9 +195,9 @@ public final class Scene {
         if (bvhRoot != null) {
             for (IShape shape : unboundedShapes) {
                 Optional<Intersection> hit = shape.intersect(ray);
-                if (hit.isPresent() && hit.get().t > EPS && hit.get().t < bestT) {
+                if (hit.isPresent() && hit.get().t() > EPS && hit.get().t() < bestT) {
                     bestHit = hit.get();
-                    bestT = bestHit.t;
+                    bestT = bestHit.t();
                 }
             }
         }

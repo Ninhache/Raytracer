@@ -23,9 +23,9 @@ public final class EditableMaterial {
 
         // par défaut on considère que ça vient d’un custom
         return new EditableMaterial(
-                mat.getDiffuse(),
-                mat.getSpecular(),
-                mat.getShininess(),
+                mat.diffuse(),
+                mat.specular(),
+                mat.shininess(),
                 MaterialPreset.CUSTOM
         );
     }

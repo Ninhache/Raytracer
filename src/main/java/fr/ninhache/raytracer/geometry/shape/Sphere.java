@@ -88,8 +88,8 @@ public final class Sphere extends AbstractShape {
         }
 
         // (o - c) vector
-        Vector oc = ray.getOrigin().sub(center); // Point - Point = Vector
-        Vector d = ray.getDirection();
+        Vector oc = ray.origin().sub(center); // Point - Point = Vector
+        Vector d = ray.direction();
 
         double a = d.dot(d); // =1 si d est unitaire
         double b = 2.0 * oc.dot(d);

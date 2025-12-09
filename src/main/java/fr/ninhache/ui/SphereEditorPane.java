@@ -104,17 +104,17 @@ public class SphereEditorPane extends ShapeEditorPane {
             mat.setPreset(val);
             if (val != MaterialPreset.CUSTOM) {
                 var m = val.toMaterial();
-                mat.setDiffuse(m.getDiffuse());
-                mat.setSpecular(m.getSpecular());
-                mat.setShininess(m.getShininess());
+                mat.setDiffuse(m.diffuse());
+                mat.setSpecular(m.specular());
+                mat.setShininess(m.shininess());
                 // update champs texte pour refléter les valeurs
-                diffR.setText(Double.toString(m.getDiffuse().r()));
-                diffG.setText(Double.toString(m.getDiffuse().g()));
-                diffB.setText(Double.toString(m.getDiffuse().b()));
-                specR.setText(Double.toString(m.getSpecular().r()));
-                specG.setText(Double.toString(m.getSpecular().g()));
-                specB.setText(Double.toString(m.getSpecular().b()));
-                shininess.setText(Double.toString(m.getShininess()));
+                diffR.setText(Double.toString(m.diffuse().r()));
+                diffG.setText(Double.toString(m.diffuse().g()));
+                diffB.setText(Double.toString(m.diffuse().b()));
+                specR.setText(Double.toString(m.specular().r()));
+                specG.setText(Double.toString(m.specular().g()));
+                specB.setText(Double.toString(m.specular().b()));
+                shininess.setText(Double.toString(m.shininess()));
             }
             syncEnabledState.run();
         });

@@ -115,8 +115,8 @@ public final class Plane extends AbstractShape {
      */
     @Override
     public Optional<Intersection> intersect(Ray ray) {
-        Vector dir = ray.getDirection();
-        Point origin = ray.getOrigin();
+        Vector dir = ray.direction();
+        Point origin = ray.origin();
 
         double denom = dir.dot(normal);
 

@@ -66,14 +66,14 @@ public final class Disk extends AbstractShape {
     @Override
     public Optional<Intersection> intersect(Ray ray) {
         // Intersections avec le plan du disque
-        double denom = normal.dot(ray.getDirection());
+        double denom = normal.dot(ray.direction());
         if (Math.abs(denom) < EPS) {
             // Rayon quasi parallèle au disque
             return Optional.empty();
         }
 
         // t = ((center - origin) • n) / (d • n)
-        Vector oc = center.sub(ray.getOrigin());
+        Vector oc = center.sub(ray.origin());
         double t = oc.dot(normal) / denom;
 
         if (t <= EPS) {
@@ -92,7 +92,7 @@ public final class Disk extends AbstractShape {
 
         // On garde la normale orientée "face caméra" (optionnel, mais souvent utile)
         Vector finalNormal = normal;
-        if (ray.getDirection().dot(finalNormal) > 0.0) {
+        if (ray.direction().dot(finalNormal) > 0.0) {
             finalNormal = finalNormal.negate();
         }
 

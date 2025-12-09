@@ -122,8 +122,6 @@ public class SceneInspector extends TabPane {
             return;
         }
 
-        System.out.println("doc lu" + doc.toString());
-
         EditableScene escene = doc.getEditableScene();
         if (escene == null) {
             clear();

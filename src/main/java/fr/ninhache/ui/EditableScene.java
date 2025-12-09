@@ -154,7 +154,7 @@ public final class EditableScene {
         boolean allMaterialsBlack = candidate.getShapes().stream()
                 .map(IShape::getMaterial)
                 .filter(mat -> mat != null)
-                .allMatch(mat -> isZero(mat.getDiffuse()) && isZero(mat.getSpecular()));
+                .allMatch(mat -> isZero(mat.diffuse()) && isZero(mat.specular()));
 
         if (missingShapes) {
             throw new ParseException("La scène reconstruite ne contient aucun objet : impossible de rendre.");

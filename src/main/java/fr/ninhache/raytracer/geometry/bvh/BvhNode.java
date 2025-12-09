@@ -91,7 +91,7 @@ public final class BvhNode {
             Optional<Intersection> lh = left.intersect(ray, bestT);
             if (lh.isPresent()) {
                 hit = lh.get();
-                bestT = hit.t;
+                bestT = hit.t();
             }
         }
 
@@ -99,9 +99,9 @@ public final class BvhNode {
             Optional<Intersection> rh = right.intersect(ray, bestT);
             if (rh.isPresent()) {
                 Intersection rHit = rh.get();
-                if (hit == null || rHit.t < bestT) {
+                if (hit == null || rHit.t() < bestT) {
                     hit = rHit;
-                    bestT = rHit.t;
+                    bestT = rHit.t();
                 }
             }
         }

@@ -60,13 +60,13 @@ public final class BoundingBox {
     }
 
     public boolean hit(Ray ray, double tMin, double tMax) {
-        double ox = ray.getOrigin().x;
-        double oy = ray.getOrigin().y;
-        double oz = ray.getOrigin().z;
+        double ox = ray.origin().x;
+        double oy = ray.origin().y;
+        double oz = ray.origin().z;
 
-        double dx = ray.getDirection().x;
-        double dy = ray.getDirection().y;
-        double dz = ray.getDirection().z;
+        double dx = ray.direction().x;
+        double dy = ray.direction().y;
+        double dz = ray.direction().z;
 
         double invDx = 1.0 / dx;
         double invDy = 1.0 / dy;

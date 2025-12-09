@@ -115,7 +115,7 @@ public class SceneBuilder {
      */
     public SceneBuilder setDiffuse(Color diffuse) throws ParseException {
         validateColorRange(diffuse, "diffuse");
-        currentMaterial = new Material(diffuse, currentMaterial.getSpecular(), currentMaterial.getShininess());
+        currentMaterial = new Material(diffuse, currentMaterial.specular(), currentMaterial.shininess());
         materialExplicitlySet = true;
         validateMaterialConstraint();
         return this;
@@ -130,7 +130,7 @@ public class SceneBuilder {
      */
     public SceneBuilder setSpecular(Color specular) throws ParseException {
         validateColorRange(specular, "specular");
-        currentMaterial = new Material(currentMaterial.getDiffuse(), specular, currentMaterial.getShininess());
+        currentMaterial = new Material(currentMaterial.diffuse(), specular, currentMaterial.shininess());
         return this;
     }
 
@@ -141,7 +141,7 @@ public class SceneBuilder {
         }
         */
 
-        currentMaterial = new Material(currentMaterial.getDiffuse(), currentMaterial.getSpecular(), shininess);
+        currentMaterial = new Material(currentMaterial.diffuse(), currentMaterial.specular(), shininess);
         materialExplicitlySet = true;
         return this;
     }
@@ -164,7 +164,7 @@ public class SceneBuilder {
             return; // la matière par défaut sera ajustée dynamiquement en fonction de l'ambiant
         }
 
-        Color sum = ambientLight.add(currentMaterial.getDiffuse());
+        Color sum = ambientLight.add(currentMaterial.diffuse());
 
         if (sum.r() > 1.0 || sum.g() > 1.0 || sum.b() > 1.0) {
             throw new ParseException(
@@ -173,7 +173,7 @@ public class SceneBuilder {
                                     "  ambient = %s\n" +
                                     "  diffuse = %s\n" +
                                     "  somme   = (%.2f, %.2f, %.2f)",
-                            ambientLight, currentMaterial.getDiffuse(),
+                            ambientLight, currentMaterial.diffuse(),
                             sum.r(), sum.g(), sum.b()
                     )
             );
@@ -274,7 +274,7 @@ public class SceneBuilder {
     }
 
     private boolean isBlack(Material mat) {
-        return mat.getDiffuse().equals(Color.BLACK) && mat.getSpecular().equals(Color.BLACK);
+        return mat.diffuse().equals(Color.BLACK) && mat.specular().equals(Color.BLACK);
     }
 
     private Material buildAutoMaterial() {
@@ -286,7 +286,7 @@ public class SceneBuilder {
         double autoG = Math.min(0.2, maxG);
         double autoB = Math.min(0.2, maxB);
 
-        return new Material(new Color(autoR, autoG, autoB), currentMaterial.getSpecular(), currentMaterial.getShininess());
+        return new Material(new Color(autoR, autoG, autoB), currentMaterial.specular(), currentMaterial.shininess());
     }
 
     /**

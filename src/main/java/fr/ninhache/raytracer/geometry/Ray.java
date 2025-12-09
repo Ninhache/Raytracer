@@ -18,17 +18,14 @@ import fr.ninhache.raytracer.math.Vector;
  *   R(t) = origin + t * direction, avec t >= 0
  * </pre>
  */
-public final class Ray {
-
-    private final Point origin;
-    private final Vector direction;
+public record Ray(Point origin, Vector direction) {
 
     /**
      * Crée un rayon à partir d'une origine et d'une direction.
      *
      * <p>La direction est automatiquement normalisée si nécessaire.
      *
-     * @param origin origine du rayon (ne doit pas être null)
+     * @param origin    origine du rayon (ne doit pas être null)
      * @param direction direction du rayon (ne doit pas être nulle ni quasi nulle)
      */
     public Ray(Point origin, Vector direction) {
@@ -54,14 +51,16 @@ public final class Ray {
     /**
      * @return l'origine du rayon
      */
-    public Point getOrigin() {
+    @Override
+    public Point origin() {
         return origin;
     }
 
     /**
      * @return la direction du rayon (vecteur unitaire)
      */
-    public Vector getDirection() {
+    @Override
+    public Vector direction() {
         return direction;
     }
 
