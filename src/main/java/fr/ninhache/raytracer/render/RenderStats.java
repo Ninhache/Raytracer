@@ -2,7 +2,7 @@ package fr.ninhache.raytracer.render;
 
 /**
  * Statistiques sur un rendu.
- *
+ * <p>
  * Immuable, idéal pour logs, UI, etc.
  */
 public record RenderStats(

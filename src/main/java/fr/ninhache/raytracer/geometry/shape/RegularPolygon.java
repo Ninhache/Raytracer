@@ -135,4 +135,18 @@ public final class RegularPolygon extends AbstractShape {
 
         return Optional.ofNullable(bestHit);
     }
+
+
+    public Point getCenter() {
+        return center;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public Vector getNormal() {
+        return normal;
+    }
+
 }

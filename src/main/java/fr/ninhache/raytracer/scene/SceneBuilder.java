@@ -184,7 +184,6 @@ public class SceneBuilder {
      * Ajoute une source lumineuse à la scène.
      *
      * @param light la source lumineuse
-     * @throws ParseException si la somme des intensités dépasse 1.0
      */
     public SceneBuilder addLight(ILight light) {
         Color allowed = new Color(

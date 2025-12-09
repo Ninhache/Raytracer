@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 
 /**
  * Point d'entrée JavaFX du raytracer.
- *
+ * <p>
  * Ne fait que :
  * - créer la fenêtre
  * - instancier la vue principale
@@ -23,8 +23,6 @@ public class RaytracerApp extends Application {
         MainView root = new MainView();
 
         Scene scene = new Scene(root, 1200, 800);
-        // Si plus tard tu as un .css:
-        // scene.getStylesheets().add(getClass().getResource("/styles/app.css").toExternalForm());
 
         stage.setTitle("Raytracer");
         stage.setScene(scene);

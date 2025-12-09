@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.LongAdder;
 
 /**
  * Compteur thread-safe de rayons lancés pendant un rendu.
- *
+ * <p>
  * Utilise LongAdder pour de bonnes perf en contexte multi-thread.
  */
 public final class RayStats {
