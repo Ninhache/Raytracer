@@ -2,18 +2,13 @@ package fr.ninhache.raytracer.scene;
 
 import fr.ninhache.raytracer.parser.FileFormatParser;
 import fr.ninhache.raytracer.parser.FormatParser;
-import fr.ninhache.raytracer.parser.TokenHandler;
 import fr.ninhache.raytracer.parser.TokenProcessorRegistry;
 import fr.ninhache.raytracer.scene.exception.ParseException;
 
 import java.io.*;
-import java.lang.reflect.AnnotatedType;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;

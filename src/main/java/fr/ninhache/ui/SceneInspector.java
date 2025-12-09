@@ -1,8 +1,5 @@
 package fr.ninhache.ui;
 
-import fr.ninhache.raytracer.lighting.ILight;
-import fr.ninhache.raytracer.scene.Camera;
-import fr.ninhache.raytracer.scene.Scene;
 import fr.ninhache.ui.model.EditableShape;
 import fr.ninhache.ui.model.SceneDocument;
 import fr.ninhache.ui.model.light.EditableLight;

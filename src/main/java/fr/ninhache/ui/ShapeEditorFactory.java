@@ -1,7 +1,6 @@
 package fr.ninhache.ui;
 
 import fr.ninhache.ui.model.EditableShape;
-import fr.ninhache.ui.model.EditableSphere;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 

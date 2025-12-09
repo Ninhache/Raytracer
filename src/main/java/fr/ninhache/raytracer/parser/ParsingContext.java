@@ -66,11 +66,11 @@ public class ParsingContext {
         this.sceneBuilder.setCamera(camera);
     }
 
-    public void addLight(ILight light) throws ParseException {
+    public void addLight(ILight light) {
         this.sceneBuilder.addLight(light);
     }
 
-    public void addShape(IShape shape) throws ParseException {
+    public void addShape(IShape shape) {
         this.sceneBuilder.addShape(shape);
     }
 

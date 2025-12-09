@@ -1,6 +1,5 @@
 package fr.ninhache.raytracer.parser.handlers;
 
-import fr.ninhache.raytracer.parser.TokenHandler;
 import fr.ninhache.raytracer.scene.exception.ParseException;
 import fr.ninhache.raytracer.parser.*;
 

@@ -134,7 +134,7 @@ public class SceneBuilder {
         return this;
     }
 
-    public SceneBuilder setShininess(double shininess) throws ParseException {
+    public SceneBuilder setShininess(double shininess) {
         currentMaterial = new Material(currentMaterial.diffuse(), currentMaterial.specular(), shininess);
         materialExplicitlySet = true;
         return this;
@@ -163,10 +163,11 @@ public class SceneBuilder {
         if (sum.r() > 1.0 || sum.g() > 1.0 || sum.b() > 1.0) {
             throw new ParseException(
                     String.format(
-                            "La somme ambient + diffuse dépasse 1.0 sur au moins une composante :\n" +
-                                    "  ambient = %s\n" +
-                                    "  diffuse = %s\n" +
-                                    "  somme   = (%.2f, %.2f, %.2f)",
+                            """
+                                    La somme ambient + diffuse dépasse 1.0 sur au moins une composante :
+                                      ambient = %s
+                                      diffuse = %s
+                                      somme   = (%.2f, %.2f, %.2f)""",
                             ambientLight, currentMaterial.diffuse(),
                             sum.r(), sum.g(), sum.b()
                     )
