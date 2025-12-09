@@ -47,10 +47,11 @@ public final class BoundingVolumes {
         }
 
         if (shape instanceof Plane) {
-            return BoundingBox.infinite();
+            // On ne sait pas borner
+            // return BoundingBox.infinite();
         }
 
-        // Fallback : indiquer qu'on ne sait pas borner proprement
+        // Indique qu'on ne sait pas borner proprement
         return BoundingBox.infinite();
     }
 }
